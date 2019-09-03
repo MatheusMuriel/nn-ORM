@@ -38,6 +38,7 @@ public class Tabela {
         StringJoiner s = new StringJoiner(" ");
 
         s.add("CREATE");
+        s.add("TABLE");
         s.add("IF NOT EXISTS");
 
         if (this.schema != null && !this.schema.equals("")){

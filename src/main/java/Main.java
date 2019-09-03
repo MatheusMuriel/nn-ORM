@@ -17,7 +17,7 @@ public class Main{
         ArrayList<String> conts = new ArrayList<>();
 
         Tabela tb = new Tabela("","teste",cols,conts);
-
         System.out.println(tb.toString());
+        db.executar(tb.toString());
     }
 }
