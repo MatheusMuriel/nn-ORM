@@ -58,4 +58,19 @@ public class Tabela {
         return s.toString();
     }
 
+    public String getSchema() {
+        return schema;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public ArrayList<Coluna> getColunas() {
+        return colunas;
+    }
+
+    public ArrayList<String> getConstr() {
+        return constr;
+    }
 }
