@@ -32,4 +32,23 @@ public class Persistencia {
         }
     }
 
+    public void executarSelect(String comando) {
+        try {
+            Statement stm = this.conn.createStatement();
+
+            ResultSet rst = stm.executeQuery(comando);
+
+            while (rst.next()) {
+                System.out.println(rst.getInt("id_contact") +  "\t" +
+                        rst.getString("primeiro_nome") + "\t" +
+                        rst.getString("ultimo_nome") + "\t" +
+                        rst.getString("email") + "\t");
+            }
+
+            System.out.println(rst);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -13,13 +13,15 @@ public class Main{
         System.out.println("Hello World!");
         Persistencia db = new Persistencia();
 
-        // populateTables(db);
+        /*populateTables(db);
 
-        // populateContacts(db);
+        populateContacts(db);
 
-        // populateTelefones(db);
+        populateTelefones(db);
 
-        populateGrupos(db);
+        populateGrupos(db);*/
+
+        getAllContatos(db, "contatos");
 
     }
 
@@ -64,6 +66,18 @@ public class Main{
     }
 
     public static void populateTelefones (Persistencia db) {
+        adicionaNumero(db, "99999-9999");
+        adicionaNumero(db, "88888-8888");
+        adicionaNumero(db, "77777-7777");
+        adicionaNumero(db, "66666-6666");
+        adicionaNumero(db, "55555-5555");
+    }
+
+    public static void populateContatoTelefone (Persistencia db) {
+        adicionaContatoNumero(db,"C1", "99999-9999");
+    }
+
+    public static void populateContatoGrupo (Persistencia db) {
         adicionaNumero(db, "99999-9999");
         adicionaNumero(db, "88888-8888");
         adicionaNumero(db, "77777-7777");
@@ -146,6 +160,44 @@ public class Main{
     }
 
     /**
+     * Adiciona na tabela de relacionamento uma relação entre um contato e um numero
+     * @param db Objeto de persistencia.
+     * @param contato Contato da relação
+     * @param numero Numero da relação
+     */
+    public static void adicionaContatoNumero(Persistencia db, String contato, String numero) {
+        ArrayList<String> colunas = new ArrayList<>();
+        ArrayList<String> valores = new ArrayList<>();
+
+        colunas.add("contatos");
+        colunas.add("telefones");
+
+        valores.add(contato);
+        valores.add(numero);
+
+        genericInsert(db,"contatos_grupos", colunas, valores);
+    }
+
+    /**
+     * Adiciona na tabela de relacionamento uma relação entre um contato e um grupo
+     * @param db Objeto de persistencia.
+     * @param contato Contato da relação
+     * @param grupo Grupo da relação
+     */
+    public static void adicionaContatoGrupo(Persistencia db, String contato, String grupo) {
+        ArrayList<String> colunas = new ArrayList<>();
+        ArrayList<String> valores = new ArrayList<>();
+
+        colunas.add("contatos");
+        colunas.add("grupos");
+
+        valores.add(contato);
+        valores.add(grupo);
+
+        genericInsert(db,"contatos_grupos", colunas, valores);
+    }
+
+    /**
      * Metodo que adiciona um grupo de contatos.
      * @param db Objeto de persistencia.
      * @param descricao descrição do grupo a ser adicionado.
@@ -205,6 +257,40 @@ public class Main{
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
+
+    }
+
+    public static void getContato(Persistencia db){
+
+    }
+
+    private static void getAllContatos(Persistencia db, String tabela){
+        StringJoiner sj = new StringJoiner(" ");
+
+        sj.add("SELECT");
+
+        sj.add("*");
+
+        sj.add("FROM");
+
+        sj.add(tabela);
+
+        try{
+            db.executarSelect(sj.toString());
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void getContatoPorTelefone(Persistencia db){
+
+    }
+
+    private static void getContatoPorNome(Persistencia db){
+
+    }
+
+    private static void genericSelect(Persistencia db, String tabela) {
 
     }
 
