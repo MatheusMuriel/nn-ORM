@@ -1,3 +1,5 @@
+import ORM.Tabela;
+
 import java.sql.*;
 
 public class Persistencia {
@@ -30,4 +32,9 @@ public class Persistencia {
         }
     }
 
+    public void getTabela(String nomeTabela) {
+
+        String select = "SELECT * FROM " + nomeTabela;
+
+    }
 }
