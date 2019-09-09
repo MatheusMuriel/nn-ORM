@@ -1,5 +1,6 @@
 import ORM.Tabela;
 import ORM.Coluna;
+import com.sun.xml.internal.ws.api.ha.StickyFeature;
 import org.sqlite.SQLiteException;
 import sun.security.timestamp.TSRequest;
 
@@ -12,7 +13,7 @@ public class Main{
         System.out.println("Hello World!");
         Persistencia db = new Persistencia();
 
-        //populateTables(db);
+        populateTables(db);
         adicionarContato(db,"C", "1", "c1g.com");
         adicionarContato(db,"C", "2", "c2g.com");
         adicionarContato(db,"C", "3", "c3g.com");
@@ -89,20 +90,40 @@ public class Main{
      */
     public static void adicionarContato(Persistencia db, String nome, String sobreNome, String email) {
 
+        ArrayList<String> colunas = new ArrayList<>();
+        ArrayList<String> valores = new ArrayList<>();
+
+        colunas.add("primeiro_nome");
+        colunas.add("ultimo_nome");
+        colunas.add("email");
+
+        valores.add(nome);
+        valores.add(sobreNome);
+        valores.add(email);
+
+        genericInsert(db,"contatos", colunas, valores);
+    }
+
+    /**
+     * Metodo generico para adicionar valores em tabelas.
+     *
+     * Sintaxe: https://www.sqlite.org/lang_insert.html
+     */
+    private static void genericInsert(Persistencia db, String tabela, ArrayList<String> colunas, ArrayList<String> valores) {
+
         StringJoiner sj = new StringJoiner(" ");
 
         sj.add("INSERT");
-        sj.add("");
 
         sj.add("INTO");
-        sj.add("contatos");
+        sj.add(tabela);
         sj.add("(");
 
         //Colunas
         StringJoiner sjColunas = new StringJoiner(",");
-        sjColunas.add("primeiro_nome");
-        sjColunas.add("ultimo_nome");
-        sjColunas.add("email");
+        for (String col : colunas) {
+            sjColunas.add(col);
+        }
 
         sj.add(sjColunas.toString());
         sj.add(")");
@@ -110,15 +131,15 @@ public class Main{
         sj.add("VALUES");
         sj.add("(");
 
-        StringJoiner sjValues = new StringJoiner(",");
-        sjValues.add("'" + nome + "'");
-        sjValues.add("'" + sobreNome + "'");
-        sjValues.add("'" + email + "'");
+        //Valores
+        StringJoiner sjValores = new StringJoiner(",");
+        for (String val : valores) {
+            sjValores.add("'" + val + "'");
+        }
 
-        sj.add(sjValues.toString());
+        sj.add(sjValores.toString());
         sj.add(")");
 
-        String str_insert = sj.toString();
 
         try{
             db.executar(sj.toString());
