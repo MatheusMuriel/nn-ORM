@@ -32,9 +32,4 @@ public class Persistencia {
         }
     }
 
-    public void getTabela(String nomeTabela) {
-
-        String select = "SELECT * FROM " + nomeTabela;
-
-    }
 }
