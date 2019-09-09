@@ -13,17 +13,14 @@ public class Main{
         System.out.println("Hello World!");
         Persistencia db = new Persistencia();
 
-        //populateTables(db);
-        adicionarContato(db,"C", "1", "c1g.com");
-        adicionarContato(db,"C", "2", "c2g.com");
-        adicionarContato(db,"C", "3", "c3g.com");
-        adicionarContato(db,"C", "4", "c4g.com");
+        // populateTables(db);
 
-        adicionaNumero(db, "99999-9999");
-        adicionaNumero(db, "88888-8888");
-        adicionaNumero(db, "77777-7777");
-        adicionaNumero(db, "66666-6666");
-        adicionaNumero(db, "55555-5555");
+        // populateContacts(db);
+
+        // populateTelefones(db);
+
+        populateGrupos(db);
+
     }
 
     public static void populateTables(Persistencia db){
@@ -58,7 +55,30 @@ public class Main{
         createRelation(db, tb_contacts,tb_groups,Relacao.N_N);
         createRelation(db, tb_contacts,tb_telefones,Relacao.N_N);
     }
-    
+
+    public static void populateContacts(Persistencia db) {
+        adicionarContato(db,"C", "1", "c1g.com");
+        adicionarContato(db,"C", "2", "c2g.com");
+        adicionarContato(db,"C", "3", "c3g.com");
+        adicionarContato(db,"C", "4", "c4g.com");
+    }
+
+    public static void populateTelefones (Persistencia db) {
+        adicionaNumero(db, "99999-9999");
+        adicionaNumero(db, "88888-8888");
+        adicionaNumero(db, "77777-7777");
+        adicionaNumero(db, "66666-6666");
+        adicionaNumero(db, "55555-5555");
+    }
+
+    public static void populateGrupos (Persistencia db) {
+        adicionaGrupo(db, "Familia");
+        adicionaGrupo(db, "Escola");
+        adicionaGrupo(db, "Trabalho");
+        adicionaGrupo(db, "RPG");
+        adicionaGrupo(db, "Teatro");
+    }
+
     private static void createRelation(Persistencia db, Tabela tb1, Tabela tb2, Relacao rl){
 
         if (rl.equals(Relacao.N_N)){
@@ -122,6 +142,24 @@ public class Main{
         valores.add(numero);
 
         genericInsert(db,"telefones", colunas, valores);
+
+    }
+
+    /**
+     * Metodo que adiciona um grupo de contatos.
+     * @param db Objeto de persistencia.
+     * @param descricao descrição do grupo a ser adicionado.
+     */
+    public static void adicionaGrupo(Persistencia db, String descricao) {
+
+        ArrayList<String> colunas = new ArrayList<>();
+        ArrayList<String> valores = new ArrayList<>();
+
+        colunas.add("descricao");
+
+        valores.add(descricao);
+
+        genericInsert(db,"grupos", colunas, valores);
 
     }
 
