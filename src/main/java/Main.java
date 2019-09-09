@@ -13,11 +13,17 @@ public class Main{
         System.out.println("Hello World!");
         Persistencia db = new Persistencia();
 
-        populateTables(db);
+        //populateTables(db);
         adicionarContato(db,"C", "1", "c1g.com");
         adicionarContato(db,"C", "2", "c2g.com");
         adicionarContato(db,"C", "3", "c3g.com");
         adicionarContato(db,"C", "4", "c4g.com");
+
+        adicionaNumero(db, "99999-9999");
+        adicionaNumero(db, "88888-8888");
+        adicionaNumero(db, "77777-7777");
+        adicionaNumero(db, "66666-6666");
+        adicionaNumero(db, "55555-5555");
     }
 
     public static void populateTables(Persistencia db){
@@ -80,13 +86,10 @@ public class Main{
 
     /**
      * Metodo que adiciona um contato.
-     * Obs: Os numeros são adicionados em uma tabela relação.
      * @param db Objeto de persistencia.
      * @param nome Nome do contato.
      * @param sobreNome Sobre nome do contato.
      * @param email Email do contato.
-     *
-     * Sintaxe: https://www.sqlite.org/lang_insert.html
      */
     public static void adicionarContato(Persistencia db, String nome, String sobreNome, String email) {
 
@@ -102,6 +105,24 @@ public class Main{
         valores.add(email);
 
         genericInsert(db,"contatos", colunas, valores);
+    }
+
+    /**
+     * Metodo que adiciona um numero de telefone.
+     * @param db Objeto de persistencia.
+     * @param numero Numero a ser adicionado.
+     */
+    public static void adicionaNumero(Persistencia db, String numero) {
+
+        ArrayList<String> colunas = new ArrayList<>();
+        ArrayList<String> valores = new ArrayList<>();
+
+        colunas.add("telefone");
+
+        valores.add(numero);
+
+        genericInsert(db,"telefones", colunas, valores);
+
     }
 
     /**
