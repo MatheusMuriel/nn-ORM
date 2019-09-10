@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 public class Persistencia {
     Connection conn;
@@ -17,6 +18,7 @@ public class Persistencia {
         conectar();
         carregarTodosOsDados();
         carregaColunas();
+        getTabelaPorNome("contatos");
     }
 
     public void conectar(){
@@ -62,6 +64,20 @@ public class Persistencia {
         }
     }
 
+    public ArrayList<Tabela> getAllTabelas() {
+        ArrayList<Tabela> tbOriginal = this.tabelas;
+
+        return (ArrayList<Tabela>)tbOriginal.clone();
+    }
+
+    public ArrayList<Tabela> getTabelaPorNome(String nome) {
+        ArrayList<Tabela> tabelas = getAllTabelas();
+
+        tabelas.removeIf( tb -> !(tb.getNome().equals(nome)));
+
+        return tabelas;
+    }
+
     /**
      * Metodo responsavel por carregar todos os dados do banco e os transformar em objetos.
      */
@@ -83,11 +99,9 @@ public class Persistencia {
         }
     }
 
-    private  void carregaColunas() {
-
+    private void carregaColunas() {
         try {
             for (Tabela tb : this.tabelas) {
-                System.out.println(tb);
                 String nomeTab = tb.getNome();
                 String slctDadosTabela = "PRAGMA table_info(" + nomeTab + ");";
                 ResultSet rst = executarSelect(slctDadosTabela);
@@ -106,9 +120,6 @@ public class Persistencia {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        System.out.println();
-
     }
 
     /**
