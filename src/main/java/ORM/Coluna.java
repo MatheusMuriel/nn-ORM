@@ -25,6 +25,14 @@ public class Coluna{
         this.constraint = constraint;
     }
 
+    /**
+     * Construtor vazio para instancia via carregamento da ORM.
+     * (Consultar metodo em Persistencia.java)
+     */
+    public Coluna() {
+
+    }
+
 
     /**
      * Metodo que transforma o objeto em uma String.

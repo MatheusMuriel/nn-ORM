@@ -28,6 +28,14 @@ public class Tabela {
     }
 
     /**
+     * Construtor vazio para instancia via carregamento da ORM.
+     * (Consultar metodo em Persistencia.java)
+     */
+    public Tabela(){
+
+    }
+
+    /**
      * Metodo que transforma o objeto em uma String.
      * Usado para criar tabelas por exemplo.
      * Sintaxe: https://www.sqlite.org/lang_createtable.html
