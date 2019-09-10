@@ -1,4 +1,6 @@
+import ORM.Coluna;
 import ORM.Tabela;
+import javafx.scene.control.Tab;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -14,6 +16,7 @@ public class Persistencia {
     public Persistencia(){
         conectar();
         carregarTodosOsDados();
+        carregaColunas();
     }
 
     public void conectar(){
@@ -64,10 +67,7 @@ public class Persistencia {
      */
     private void carregarTodosOsDados() {
         String slctTodasAsTabelas = "SELECT * FROM sqlite_master WHERE type='table' AND name NOT LIKE '%sqlite%';";
-
         ResultSet rst = executarSelect(slctTodasAsTabelas);
-
-        ArrayList<Object> objs = new ArrayList<>();
 
         try {
             while (rst.next()) {
@@ -81,6 +81,34 @@ public class Persistencia {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private  void carregaColunas() {
+
+        try {
+            for (Tabela tb : this.tabelas) {
+                System.out.println(tb);
+                String nomeTab = tb.getNome();
+                String slctDadosTabela = "PRAGMA table_info(" + nomeTab + ");";
+                ResultSet rst = executarSelect(slctDadosTabela);
+
+                while (rst.next()) {
+                    String nomeColuna = rst.getString("name");
+                    String tipoColuna = rst.getString("type");
+
+                    HashMap<String, String> parametros = new HashMap<>();
+                    parametros.put("nome", nomeColuna);
+                    parametros.put("tipoDeDado", tipoColuna);
+
+                    tb.adicionarColuna(Coluna.class.cast(createClass("ORM.Coluna", parametros)));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println();
+
     }
 
     /**

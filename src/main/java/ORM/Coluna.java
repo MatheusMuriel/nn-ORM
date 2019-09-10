@@ -34,7 +34,6 @@ public class Coluna{
 
         if (parametros.containsKey("nome")) this.nome = parametros.get("nome");
         if (parametros.containsKey("tipoDeDado")) this.tipoDeDado = parametros.get("tipoDeDado");
-        if (parametros.containsKey("constraint")) this.constraint = parametros.get("constraint");
 
     }
 

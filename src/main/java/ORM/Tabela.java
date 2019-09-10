@@ -10,7 +10,7 @@ import java.util.StringJoiner;
 public class Tabela {
     String schema;
     String nome;
-    ArrayList<Coluna> colunas;
+    ArrayList<Coluna> colunas = new ArrayList<>();
     ArrayList<String> constr; //https://www.sqlite.org/syntax/table-constraint.html
 
     /**
@@ -36,6 +36,11 @@ public class Tabela {
 
         if (parametros.containsKey("nome")) this.nome = parametros.get("nome");
 
+    }
+
+    @Override
+    public String toString(){
+        return this.nome;
     }
 
     /**
@@ -74,6 +79,10 @@ public class Tabela {
 
     public String getNome() {
         return nome;
+    }
+
+    public void adicionarColuna(Coluna coluna) {
+        this.colunas.add(coluna);
     }
 
     public ArrayList<Coluna> getColunas() {
