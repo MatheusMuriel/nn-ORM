@@ -1,6 +1,7 @@
 package ORM;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.StringJoiner;
 
 /**
@@ -31,7 +32,9 @@ public class Tabela {
      * Construtor vazio para instancia via carregamento da ORM.
      * (Consultar metodo em Persistencia.java)
      */
-    public Tabela(){
+    public Tabela(HashMap<String, String> parametros) {
+
+        if (parametros.containsKey("nome")) this.nome = parametros.get("nome");
 
     }
 
@@ -41,8 +44,7 @@ public class Tabela {
      * Sintaxe: https://www.sqlite.org/lang_createtable.html
      * https://www.w3schools.com/sql/sql_create_table.asp
      */
-    @Override
-    public String toString(){
+    public String toSQLCreate(){
         StringJoiner s = new StringJoiner(" ");
 
         s.add("CREATE");

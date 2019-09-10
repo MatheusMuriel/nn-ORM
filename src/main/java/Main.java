@@ -32,7 +32,7 @@ public class Main{
         cols_groups.add(new Coluna("descricao","",""));
         ArrayList<String> conts_groups = new ArrayList<>();
         Tabela tb_groups = new Tabela("", "grupos", cols_groups, conts_groups);
-        db.executar(tb_groups.toString());
+        db.executar(tb_groups.toSQLCreate());
 
         //Contacts
         ArrayList<Coluna> cols_contacts = new ArrayList<>();
@@ -43,7 +43,7 @@ public class Main{
         ArrayList<String> conts_contacts = new ArrayList<>();
         conts_contacts.add("");
         Tabela tb_contacts = new Tabela("", "contatos", cols_contacts, conts_contacts);
-        db.executar(tb_contacts.toString());
+        db.executar(tb_contacts.toSQLCreate());
 
         //Phones
         ArrayList<Coluna> cols_fones = new ArrayList<>();
@@ -52,7 +52,7 @@ public class Main{
         ArrayList<String> conts_fones = new ArrayList<>();
         conts_fones.add("");
         Tabela tb_telefones = new Tabela("", "telefones", cols_fones, conts_fones);
-        db.executar(tb_telefones.toString());
+        db.executar(tb_telefones.toSQLCreate());
 
         createRelation(db, tb_contacts,tb_groups,Relacao.N_N);
         createRelation(db, tb_contacts,tb_telefones,Relacao.N_N);

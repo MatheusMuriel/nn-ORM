@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 public class Persistencia {
     Connection conn;
@@ -51,7 +53,6 @@ public class Persistencia {
             }*/
 
             return rst;
-
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -62,12 +63,24 @@ public class Persistencia {
      * Metodo responsavel por carregar todos os dados do banco e os transformar em objetos.
      */
     private void carregarTodosOsDados() {
-        String slctTodasAsTabelas = "SELECT * FROM sqlite_master WHERE type='table';";
+        String slctTodasAsTabelas = "SELECT * FROM sqlite_master WHERE type='table' AND name NOT LIKE '%sqlite%';";
 
         ResultSet rst = executarSelect(slctTodasAsTabelas);
 
-        Object c = createClass("ORM.Coluna");
-        System.out.println();
+        ArrayList<Object> objs = new ArrayList<>();
+
+        try {
+            while (rst.next()) {
+                String nomeTabela = rst.getString("name");
+
+                HashMap<String, String> parametros = new HashMap<>();
+                parametros.put("nome", nomeTabela);
+
+                this.tabelas.add(Tabela.class.cast(createClass("ORM.Tabela", parametros)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -75,13 +88,13 @@ public class Persistencia {
      * @param nome Nome da classe a ser instanciada.
      * @return Objeto que é uma instancia da classe com o nome informado.
      */
-    private Object createClass(String nome) {
+    private Object createClass(String nome, HashMap<String, String> parametros) {
         Object object = null;
 
         try {
             Class<?> clazz = Class.forName(nome);
-            Constructor<?> ctor = clazz.getConstructor();
-            object = ctor.newInstance();
+            Constructor<?> ctor = clazz.getConstructor(HashMap.class);
+            object = ctor.newInstance(parametros);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {

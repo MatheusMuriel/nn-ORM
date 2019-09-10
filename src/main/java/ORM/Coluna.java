@@ -1,5 +1,6 @@
 package ORM;
 
+import java.util.HashMap;
 import java.util.StringJoiner;
 
 /**
@@ -29,7 +30,11 @@ public class Coluna{
      * Construtor vazio para instancia via carregamento da ORM.
      * (Consultar metodo em Persistencia.java)
      */
-    public Coluna() {
+    public Coluna(HashMap<String, String> parametros) {
+
+        if (parametros.containsKey("nome")) this.nome = parametros.get("nome");
+        if (parametros.containsKey("tipoDeDado")) this.tipoDeDado = parametros.get("tipoDeDado");
+        if (parametros.containsKey("constraint")) this.constraint = parametros.get("constraint");
 
     }
 
