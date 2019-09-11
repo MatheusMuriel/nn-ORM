@@ -1,4 +1,4 @@
-package muriel.ORM;
+package recursos.ORM;
 
 import java.util.HashMap;
 import java.util.StringJoiner;

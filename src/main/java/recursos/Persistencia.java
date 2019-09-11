@@ -1,7 +1,7 @@
-package muriel;
+package recursos;
 
-import muriel.ORM.Coluna;
-import muriel.ORM.Tabela;
+import recursos.ORM.Coluna;
+import recursos.ORM.Tabela;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -23,7 +23,7 @@ public class Persistencia {
 
     public void conectar(){
         try {
-            this.conn = DriverManager.getConnection("jdbc:sqlite:banco.db");
+            this.conn = DriverManager.getConnection("jdbc:sqlite:banco.sqlite");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -184,8 +184,7 @@ public class Persistencia {
      */
     public <T> Tabela construirTabela(T modelo) {
 
-        Field[] _f  =   modelo.getClass().getDeclaredFields();
-        List<Field> f = Arrays.asList(_f);
+        List<Field> f = getAtributos(modelo);
         f.forEach(fi -> fi.setAccessible(true));
 
         String nomeTabela = relativeNomeClasse(modelo.getClass().getName()).toLowerCase();
@@ -207,8 +206,72 @@ public class Persistencia {
     public <T> void salvarObjeto(T objeto) {
         String nomeTabela = relativeNomeClasse(objeto.getClass().getName()).toLowerCase();
 
+        List<Field> f = getAtributos(objeto);
+        f.forEach(fi -> fi.setAccessible(true));
 
-        System.out.println();
+        ArrayList<String> colunas = new ArrayList<>();
+        ArrayList<String> valores = new ArrayList<>();
+
+        for (Field fi : f) {
+            String constraints = convertAnotation(fi.getAnnotations());
+            try {
+                String nomeColuna = fi.getName();
+                boolean isId = nomeColuna.startsWith("id_");
+                if (!isId) {
+                    colunas.add(nomeColuna);
+                    valores.add(String.valueOf(fi.get(objeto)));
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        genericInsert(nomeTabela, colunas, valores);
+    }
+
+    /**
+     * Metodo generico para adicionar valores em tabelas.
+     *
+     * Sintaxe: https://www.sqlite.org/lang_insert.html
+     */
+    private void genericInsert(String tabela, ArrayList<String> colunas, ArrayList<String> valores) {
+
+        StringJoiner sj = new StringJoiner(" ");
+
+        sj.add("INSERT");
+
+        sj.add("INTO");
+        sj.add(tabela);
+        sj.add("(");
+
+        //Colunas
+        StringJoiner sjColunas = new StringJoiner(",");
+        for (String col : colunas) {
+            sjColunas.add(col);
+        }
+
+        sj.add(sjColunas.toString());
+        sj.add(")");
+
+        sj.add("VALUES");
+        sj.add("(");
+
+        //Valores
+        StringJoiner sjValores = new StringJoiner(",");
+        for (String val : valores) {
+            sjValores.add("'" + val + "'");
+        }
+
+        sj.add(sjValores.toString());
+        sj.add(")");
+
+
+        try{
+            executar(sj.toString());
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
     }
 
     private String capitalize(String _str) {
@@ -257,5 +320,11 @@ public class Persistencia {
                 System.out.println("Tentativa de conversão de dado de tipo desconhecido.");
                 return "";
         }
+    }
+
+    private <T> List<Field> getAtributos(T clazz) {
+        Field[] _f  =   clazz.getClass().getDeclaredFields();
+        List<Field> f = Arrays.asList(_f);
+        return f;
     }
 }

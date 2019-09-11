@@ -1,9 +1,9 @@
-import muriel.MVC.modelos.Contato;
-import muriel.MVC.modelos.Grupo;
-import muriel.MVC.modelos.Telefone;
-import muriel.ORM.Tabela;
-import muriel.ORM.Coluna;
-import muriel.Persistencia;
+import recursos.MVC.modelos.Contato;
+import recursos.MVC.modelos.Grupo;
+import recursos.MVC.modelos.Telefone;
+import recursos.ORM.Tabela;
+import recursos.ORM.Coluna;
+import recursos.Persistencia;
 
 import java.util.ArrayList;
 import java.util.StringJoiner;
@@ -17,7 +17,9 @@ public class Main{
         populateTables(db);
 
 
-        populateContacts(db);
+        populateContatos(db);
+        populateGrupos(db);
+        populateTelefones(db);
 
         /*
         populateTelefones(db);
@@ -75,19 +77,29 @@ public class Main{
 
     }
 
-    public static void populateContacts(Persistencia db) {
-        muriel.MVC.controles.Contato contControl = new muriel.MVC.controles.Contato();
+    public static void populateContatos(Persistencia db) {
+        recursos.MVC.controles.Contato contControl = new recursos.MVC.controles.Contato();
         contControl.novoContato(db, "Jose", "Silva", "jose.silva@gmail.com");
         contControl.novoContato(db, "Maria", "Antonia", "maria_antonia@gmail.com");
         contControl.novoContato(db, "Roberto", "Souza", "robert-souza@gmail.com");
     }
 
     public static void populateTelefones (Persistencia db) {
-        adicionaNumero(db, "99999-9999");
-        adicionaNumero(db, "88888-8888");
-        adicionaNumero(db, "77777-7777");
-        adicionaNumero(db, "66666-6666");
-        adicionaNumero(db, "55555-5555");
+        recursos.MVC.controles.Telefone telefControl = new recursos.MVC.controles.Telefone();
+        telefControl.novoTelefone(db, "99999-9999");
+        telefControl.novoTelefone(db, "88888-8888");
+        telefControl.novoTelefone(db, "77777-7777");
+        telefControl.novoTelefone(db, "66666-6666");
+        telefControl.novoTelefone(db, "55555-5555");
+    }
+
+    public static void populateGrupos (Persistencia db) {
+        recursos.MVC.controles.Grupo grupControl = new recursos.MVC.controles.Grupo();
+        grupControl.novoGrupo(db, "Familia");
+        grupControl.novoGrupo(db, "Escola");
+        grupControl.novoGrupo(db, "Trabalho");
+        grupControl.novoGrupo(db, "RPG");
+        grupControl.novoGrupo(db, "Teatro");
     }
 
     public static void populateContatoTelefone (Persistencia db) {
@@ -100,14 +112,6 @@ public class Main{
         adicionaNumero(db, "77777-7777");
         adicionaNumero(db, "66666-6666");
         adicionaNumero(db, "55555-5555");
-    }
-
-    public static void populateGrupos (Persistencia db) {
-        adicionaGrupo(db, "Familia");
-        adicionaGrupo(db, "Escola");
-        adicionaGrupo(db, "Trabalho");
-        adicionaGrupo(db, "RPG");
-        adicionaGrupo(db, "Teatro");
     }
 
     /**
@@ -130,7 +134,7 @@ public class Main{
         valores.add(sobreNome);
         valores.add(email);
 
-        genericInsert(db,"contatos", colunas, valores);
+        //genericInsert(db,"contatos", colunas, valores);
     }
 
     /**
@@ -147,7 +151,7 @@ public class Main{
 
         valores.add(numero);
 
-        genericInsert(db,"telefones", colunas, valores);
+        //genericInsert(db,"telefones", colunas, valores);
 
     }
 
@@ -167,7 +171,7 @@ public class Main{
         valores.add(contato);
         valores.add(numero);
 
-        genericInsert(db,"contatos_grupos", colunas, valores);
+        //genericInsert(db,"contatos_grupos", colunas, valores);
     }
 
     /**
@@ -186,7 +190,7 @@ public class Main{
         valores.add(contato);
         valores.add(grupo);
 
-        genericInsert(db,"contatos_grupos", colunas, valores);
+        //genericInsert(db,"contatos_grupos", colunas, valores);
     }
 
     /**
@@ -203,56 +207,7 @@ public class Main{
 
         valores.add(descricao);
 
-        genericInsert(db,"grupos", colunas, valores);
-
-    }
-
-    /**
-     * Metodo generico para adicionar valores em tabelas.
-     *
-     * Sintaxe: https://www.sqlite.org/lang_insert.html
-     */
-    private static void genericInsert(Persistencia db, String tabela, ArrayList<String> colunas, ArrayList<String> valores) {
-
-        StringJoiner sj = new StringJoiner(" ");
-
-        sj.add("INSERT");
-
-        sj.add("INTO");
-        sj.add(tabela);
-        sj.add("(");
-
-        //Colunas
-        StringJoiner sjColunas = new StringJoiner(",");
-        for (String col : colunas) {
-            sjColunas.add(col);
-        }
-
-        sj.add(sjColunas.toString());
-        sj.add(")");
-
-        sj.add("VALUES");
-        sj.add("(");
-
-        //Valores
-        StringJoiner sjValores = new StringJoiner(",");
-        for (String val : valores) {
-            sjValores.add("'" + val + "'");
-        }
-
-        sj.add(sjValores.toString());
-        sj.add(")");
-
-
-        try{
-            db.executar(sj.toString());
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-
-    }
-
-    public static void getContato(Persistencia db){
+        //genericInsert(db,"grupos", colunas, valores);
 
     }
 

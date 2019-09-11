@@ -1,4 +1,4 @@
-package muriel.MVC.modelos;
+package recursos.MVC.modelos;
 
 public class Telefone {
     @ChavePrimaria
