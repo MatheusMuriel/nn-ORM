@@ -50,13 +50,6 @@ public class Persistencia {
 
             ResultSet rst = stm.executeQuery(comando);
 
-            /*while (rst.next()) {
-                System.out.println(rst.getInt("id_contact") +  "\t" +
-                        rst.getString("primeiro_nome") + "\t" +
-                        rst.getString("ultimo_nome") + "\t" +
-                        rst.getString("email") + "\t");
-            }*/
-
             return rst;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -79,10 +72,35 @@ public class Persistencia {
     }
 
     /**
-     * Metodo responsavel por carregar todos os dados do banco e os transformar em objetos.
+     * Metodo responsavel por carregar as tabelas do banco
+     * (com exceção das tabelas de controle do sqlite), às
+     * transformar em objetos e adicionar na lista de tabelas.
+     *
+     * Obs: As tabelas de referencias normalmente não vão para a lista de tabelas
+     * pois elas abstraidas e assim ficam invisiveis ao programador.
      */
     private void carregarTabelas() {
-        String slctTodasAsTabelas = "SELECT * FROM sqlite_master WHERE type='table' AND name NOT LIKE '%sqlite%' AND name NOT LIKE '%_%';";
+        ArrayList<Tabela> tabs = carregarListaTabelas(false);
+        this.tabelas.addAll(tabs);
+    }
+
+    /**
+     * Metodo responsavel por retornar uma lista das tabelas do banco
+     * (com exceção das tabelas de controle do sqlite)
+     * transformadas em objetos.
+     *
+     * @param tabelasOcultas Se for true ele vai retornar tambem as tabelas de referencia.
+     * @return ArrayList contendo as instancias das classes dos modelos das tabelas do banco.
+     */
+    private ArrayList<Tabela> carregarListaTabelas(boolean tabelasOcultas) {
+        ArrayList<Tabela> tabelaDeSaida = new ArrayList<>();
+        String slctTodasAsTabelas = "SELECT * FROM sqlite_master WHERE type='table' AND name NOT LIKE '%sqlite%'";
+
+        if (!tabelasOcultas) {
+            String adicaoParaTodas = " AND name NOT LIKE '%\\_%' ESCAPE '\\'";
+            slctTodasAsTabelas += adicaoParaTodas;
+        }
+
         ResultSet rst = executarSelect(slctTodasAsTabelas);
 
         try {
@@ -90,21 +108,27 @@ public class Persistencia {
                 String nomeTabela = rst.getString("name");
 
                 StringJoiner sj = new StringJoiner(".");
-                sj.add("muriel.MVC");
-                sj.add("modelos");
+                sj.add("recursos.MVC.modelos");
                 sj.add(capitalize(nomeTabela));
 
                 HashMap<String, String> parametros = new HashMap<>();
                 parametros.put("nome", nomeTabela);
                 parametros.put("modelo", sj.toString());
 
-                this.tabelas.add(Tabela.class.cast(createClass("muriel.ORM.Tabela", parametros)));
+                Class classeORMTabela = Tabela.class;
+                Object objClass = createClass(classeORMTabela.getName(), parametros);
+                tabelaDeSaida.add((Tabela) objClass);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return tabelaDeSaida;
     }
 
+    /**
+     * Metodo responsavel por carregar todos as colunas das tabelas e os transformar em objetos.
+     */
     private void carregaColunas() {
         try {
             for (Tabela tb : this.tabelas) {
@@ -155,6 +179,22 @@ public class Persistencia {
         }
     }
 
+    /**
+     * Metodo apenas para ambiente de desenvolvimento.
+     * Dropa todas as tabelas do banco.
+     */
+    public void droparTodasAsTabelas() {
+
+        ArrayList<Tabela> todasAsTabelas = carregarListaTabelas(true);
+        for (Tabela t : todasAsTabelas) {
+            StringJoiner comandoDrop = new StringJoiner(" ");
+            comandoDrop.add("DROP");
+            comandoDrop.add("TABLE");
+            comandoDrop.add(t.getNome());
+
+            executar(comandoDrop.toString());
+        }
+    }
     /**
      * https://stackoverflow.com/questions/6094575/creating-an-instance-using-the-class-name-and-calling-constructor
      * @param nome Nome da classe a ser instanciada.

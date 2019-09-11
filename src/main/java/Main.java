@@ -14,23 +14,29 @@ public class Main{
         System.out.println("Hello World!");
         Persistencia db = new Persistencia();
 
-        populateTables(db);
+        db.droparTodasAsTabelas();
 
+        //criarTabelas(db);
 
+        //populateTabelas(db);
+    }
+
+    /**
+     * Metodo apenas para desenvolvimento.
+     * Poputa as tabelas com alguns dados.
+     * @param db Instancia de persistencia.
+     */
+    private static void populateTabelas(Persistencia db) {
         populateContatos(db);
         populateGrupos(db);
         populateTelefones(db);
-
-        /*
-        populateTelefones(db);
-
-        populateGrupos(db);*/
-
-        //getAllContatos(db, "contatos");
-
     }
 
-    public static void populateTables(Persistencia db){
+    /**
+     * Metodo que transforma os objetos modelos em tabelas no SQL.
+     * @param db Instancia de persistencia.
+     */
+    public static void criarTabelas(Persistencia db){
         //Groups
         Tabela grupo = db.construirTabela(new Grupo());
         db.executar( grupo.toSQLCreate() );
@@ -43,40 +49,44 @@ public class Main{
         Tabela telefone = db.construirTabela(new Telefone());
         db.executar( telefone.toSQLCreate() );
 
-        createRelation(db, contato, grupo, Relacao.N_N);
-        createRelation(db, contato, telefone, Relacao.N_N);
+        criarRelacoes(db, Relacao.N_N, contato, grupo);
+        criarRelacoes(db, Relacao.N_N, contato, telefone);
     }
 
     /**
      * Metodo para criar uma tabela de relacionamento.
      * @param db Instancia da classe de persistencia.
-     * @param tb1 Tabela1 da relação.
-     * @param tb2 Tabela2 da relação.
      * @param rl Enum com o tipo de ralação.
+     * @param tbs Vargs de tabelas da relação.
      */
-    private static void createRelation(Persistencia db, Tabela tb1, Tabela tb2, Relacao rl){
+    private static void criarRelacoes(Persistencia db, Relacao rl, Tabela... tbs){
+        if ( rl.equals(Relacao.N_N) ) {
 
-        if (rl.equals(Relacao.N_N)){
-            //Tabela relacionamento
+            StringJoiner nomeTabela = new StringJoiner("_");
             ArrayList<Coluna> colunas = new ArrayList<>();
 
-            StringJoiner coluna01 = new StringJoiner(" ");
-            coluna01.add("REFERENCES");
-            coluna01.add( tb1.getNome() );
-            colunas.add(new Coluna(tb1.getNome(),"", coluna01.toString()));
+            for (Tabela t : tbs) {
+                String nomeColuna = t.getNome().concat("_fk");
+                String constraint = "REFERENCES " + t.getNome();
 
-            StringJoiner coluna02 = new StringJoiner(" ");
-            coluna02.add("REFERENCES");
-            coluna02.add(tb2.getNome());
-            colunas.add(new Coluna(tb2.getNome(),"", coluna02.toString()));
+                Coluna c = new Coluna(nomeColuna,"", constraint);
+                colunas.add(c);
 
-            Tabela tb_rel = new Tabela(tb1.getNome().concat("_").concat(tb2.getNome()), colunas);
+                nomeTabela.add(t.getNome());
+            }
 
-            db.executar(tb_rel.toSQLCreate());
+            Tabela tabelaRelacionamento = new Tabela(nomeTabela.toString(), colunas);
+
+            db.executar(tabelaRelacionamento.toSQLCreate());
+        } else {
+            System.err.println("Falha ao criar tabela de relação. Tipo de relação invalida.");
         }
-
     }
 
+    /**
+     * Metodo para popular a tabela de Contatos com alguns dados de exemplo.
+     * @param db Instancia de persistencia.
+     */
     public static void populateContatos(Persistencia db) {
         recursos.MVC.controles.Contato contControl = new recursos.MVC.controles.Contato();
         contControl.novoContato(db, "Jose", "Silva", "jose.silva@gmail.com");
@@ -84,6 +94,10 @@ public class Main{
         contControl.novoContato(db, "Roberto", "Souza", "robert-souza@gmail.com");
     }
 
+    /**
+     * Metodo para popular a tabela de Telefones com alguns dados de exemplo.
+     * @param db Instancia de persistencia.
+     */
     public static void populateTelefones (Persistencia db) {
         recursos.MVC.controles.Telefone telefControl = new recursos.MVC.controles.Telefone();
         telefControl.novoTelefone(db, "99999-9999");
@@ -93,6 +107,10 @@ public class Main{
         telefControl.novoTelefone(db, "55555-5555");
     }
 
+    /**
+     * Metodo para popular a tabela de Grupos com alguns dados de exemplo.
+     * @param db Instancia de persistencia.
+     */
     public static void populateGrupos (Persistencia db) {
         recursos.MVC.controles.Grupo grupControl = new recursos.MVC.controles.Grupo();
         grupControl.novoGrupo(db, "Familia");
