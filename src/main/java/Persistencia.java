@@ -1,7 +1,9 @@
 import ORM.Coluna;
 import ORM.Tabela;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,9 +16,9 @@ public class Persistencia {
 
     public Persistencia(){
         conectar();
-        carregarTabelas();
-        carregaColunas();
-        getTabelaPorNome("contato");
+        //carregarTabelas();
+        //carregaColunas();
+        //getTabelaPorNome("contato");
     }
 
     public void conectar(){
@@ -182,5 +184,21 @@ public class Persistencia {
 
     private String capitalize(String str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    public <T> void construirTabela(T modelo) {
+
+        Field[] f  =   modelo.getClass().getDeclaredFields();
+        System.out.println("Os Campos da Classe São : ");
+
+        for (int i = 0 ; i < f.length ; i++){
+            f[i].setAccessible(true);
+            try {
+                Annotation[] ant = f[i].getAnnotations();
+                System.out.println("Nome : " + f[i].getName() + "  Valor: " + f[i].get(modelo) + "  Anotantion: " + f[i].getAnnotations());
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

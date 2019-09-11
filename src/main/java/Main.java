@@ -1,7 +1,9 @@
+import MVC.modelos.Contato;
 import ORM.Tabela;
 import ORM.Coluna;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.StringJoiner;
 
 public class Main{
@@ -10,7 +12,7 @@ public class Main{
         System.out.println("Hello World!");
         Persistencia db = new Persistencia();
 
-        populateTables(db);
+        //populateTables(db);
 
         /*
         populateContacts(db);
@@ -19,8 +21,11 @@ public class Main{
 
         populateGrupos(db);*/
 
-        getAllContatos(db, "contatos");
+        //getAllContatos(db, "contatos");
 
+        Contato ct = new Contato("Jose", "Silva", "jose@silva.com");
+
+        db.construirTabela(ct);
     }
 
     public static void populateTables(Persistencia db){
