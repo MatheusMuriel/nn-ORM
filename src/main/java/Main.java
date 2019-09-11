@@ -1,4 +1,6 @@
 import MVC.modelos.Contato;
+import MVC.modelos.Grupo;
+import MVC.modelos.Telefone;
 import ORM.Tabela;
 import ORM.Coluna;
 
@@ -27,25 +29,16 @@ public class Main{
 
     public static void populateTables(Persistencia db){
         //Groups
-        /*ArrayList<Coluna> cols_groups = new ArrayList<>();
-        cols_groups.add(new Coluna("id_grupo","INTEGER","PRIMARY KEY"));
-        cols_groups.add(new Coluna("descricao","",""));
-        ArrayList<String> conts_groups = new ArrayList<>();
-        Tabela tb_groups = new Tabela("grupo", cols_groups);
-        db.executar(tb_groups.toSQLCreate());*/
+        Grupo grupo = new Grupo();
+        db.executar( db.construirTabela(grupo).toSQLCreate() );
 
         //Contacts
         Contato contatos = new Contato();
         db.executar( db.construirTabela(contatos).toSQLCreate() );
 
         //Phones
-        /*ArrayList<Coluna> cols_fones = new ArrayList<>();
-        cols_fones.add(new Coluna("id_telefone","INTEGER","PRIMARY KEY"));
-        cols_fones.add(new Coluna("telefone","","NOT NULL"));
-        ArrayList<String> conts_fones = new ArrayList<>();
-        conts_fones.add("");
-        Tabela tb_telefones = new Tabela("telefone", cols_fones);
-        db.executar(tb_telefones.toSQLCreate());*/
+        Telefone telefone = new Telefone();
+        db.executar( db.construirTabela(telefone).toSQLCreate() );
 
         //createRelation(db, tb_contacts,tb_groups,Relacao.N_N);
         //createRelation(db, tb_contacts,tb_telefones,Relacao.N_N);

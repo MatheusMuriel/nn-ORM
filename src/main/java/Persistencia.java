@@ -232,6 +232,9 @@ public class Persistencia {
                 case "UNICO":
                     sj.add("UNIQUE");
                     break;
+                case "OBRIGATORIO":
+                    sj.add("NOT NULL");
+                    break;
                 default:
                     System.err.println("Tentativa de conversão de annotation de tipo desconhecido.");
                     break;
