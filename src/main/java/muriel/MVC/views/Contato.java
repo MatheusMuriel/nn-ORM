@@ -1,4 +1,4 @@
-package MVC.controles;
+package muriel.MVC.views;
 
 public class Contato {
 }

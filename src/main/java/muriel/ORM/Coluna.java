@@ -1,4 +1,4 @@
-package ORM;
+package muriel.ORM;
 
 import java.util.HashMap;
 import java.util.StringJoiner;
@@ -27,8 +27,8 @@ public class Coluna{
     }
 
     /**
-     * Construtor vazio para instancia via carregamento da ORM.
-     * (Consultar metodo em Persistencia.java)
+     * Construtor vazio para instancia via carregamento da muriel.ORM.
+     * (Consultar metodo em muriel.Persistencia.java)
      */
     public Coluna(HashMap<String, String> parametros) {
 

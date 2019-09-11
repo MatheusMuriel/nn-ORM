@@ -1,11 +1,11 @@
-import MVC.modelos.Contato;
-import MVC.modelos.Grupo;
-import MVC.modelos.Telefone;
-import ORM.Tabela;
-import ORM.Coluna;
+import muriel.MVC.modelos.Contato;
+import muriel.MVC.modelos.Grupo;
+import muriel.MVC.modelos.Telefone;
+import muriel.ORM.Tabela;
+import muriel.ORM.Coluna;
+import muriel.Persistencia;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.StringJoiner;
 
 public class Main{
@@ -16,9 +16,10 @@ public class Main{
 
         populateTables(db);
 
-        /*
+
         populateContacts(db);
 
+        /*
         populateTelefones(db);
 
         populateGrupos(db);*/
@@ -75,10 +76,10 @@ public class Main{
     }
 
     public static void populateContacts(Persistencia db) {
-        adicionarContato(db,"C", "1", "c1g.com");
-        adicionarContato(db,"C", "2", "c2g.com");
-        adicionarContato(db,"C", "3", "c3g.com");
-        adicionarContato(db,"C", "4", "c4g.com");
+        muriel.MVC.controles.Contato contControl = new muriel.MVC.controles.Contato();
+        contControl.novoContato(db, "Jose", "Silva", "jose.silva@gmail.com");
+        contControl.novoContato(db, "Maria", "Antonia", "maria_antonia@gmail.com");
+        contControl.novoContato(db, "Roberto", "Souza", "robert-souza@gmail.com");
     }
 
     public static void populateTelefones (Persistencia db) {

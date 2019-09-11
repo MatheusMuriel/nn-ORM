@@ -1,4 +1,4 @@
-package MVC.modelos;
+package muriel.MVC.modelos;
 
 
 public class Contato {

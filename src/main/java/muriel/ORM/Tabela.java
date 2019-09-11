@@ -1,4 +1,4 @@
-package ORM;
+package muriel.ORM;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +26,8 @@ public class Tabela {
     }
 
     /**
-     * Construtor vazio para instancia via carregamento da ORM.
-     * (Consultar metodo em Persistencia.java)
+     * Construtor vazio para instancia via carregamento da muriel.ORM.
+     * (Consultar metodo em muriel.Persistencia.java)
      */
     public Tabela(HashMap<String, String> parametros) {
 
@@ -37,7 +37,6 @@ public class Tabela {
                 Class<?> clazz = Class.forName(parametros.get("modelo"));
                 this.linhas = instanceArray(clazz);
             }
-            System.out.println();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

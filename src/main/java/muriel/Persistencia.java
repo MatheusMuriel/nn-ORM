@@ -1,5 +1,7 @@
-import ORM.Coluna;
-import ORM.Tabela;
+package muriel;
+
+import muriel.ORM.Coluna;
+import muriel.ORM.Tabela;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -7,8 +9,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 public class Persistencia {
     Connection conn;
@@ -16,7 +16,7 @@ public class Persistencia {
 
     public Persistencia(){
         conectar();
-        //carregarTabelas();
+        carregarTabelas();
         //carregaColunas();
         //getTabelaPorNome("contato");
     }
@@ -82,7 +82,7 @@ public class Persistencia {
      * Metodo responsavel por carregar todos os dados do banco e os transformar em objetos.
      */
     private void carregarTabelas() {
-        String slctTodasAsTabelas = "SELECT * FROM sqlite_master WHERE type='table' AND name NOT LIKE '%sqlite%';";
+        String slctTodasAsTabelas = "SELECT * FROM sqlite_master WHERE type='table' AND name NOT LIKE '%sqlite%' AND name NOT LIKE '%_%';";
         ResultSet rst = executarSelect(slctTodasAsTabelas);
 
         try {
@@ -90,7 +90,7 @@ public class Persistencia {
                 String nomeTabela = rst.getString("name");
 
                 StringJoiner sj = new StringJoiner(".");
-                sj.add("MVC");
+                sj.add("muriel.MVC");
                 sj.add("modelos");
                 sj.add(capitalize(nomeTabela));
 
@@ -98,7 +98,7 @@ public class Persistencia {
                 parametros.put("nome", nomeTabela);
                 parametros.put("modelo", sj.toString());
 
-                this.tabelas.add(Tabela.class.cast(createClass("ORM.Tabela", parametros)));
+                this.tabelas.add(Tabela.class.cast(createClass("muriel.ORM.Tabela", parametros)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -120,7 +120,7 @@ public class Persistencia {
                     parametros.put("nome", nomeColuna);
                     parametros.put("tipoDeDado", tipoColuna);
 
-                    tb.adicionarColuna(Coluna.class.cast(createClass("ORM.Coluna", parametros)));
+                    tb.adicionarColuna(Coluna.class.cast(createClass("muriel.ORM.Coluna", parametros)));
                 }
             }
         } catch (SQLException e) {
@@ -147,7 +147,7 @@ public class Persistencia {
                     parametros.put("nome", nomeColuna);
                     parametros.put("tipoDeDado", tipoColuna);
 
-                    tb.adicionarColuna(Coluna.class.cast(createClass("ORM.Coluna", parametros)));
+                    tb.adicionarColuna(Coluna.class.cast(createClass("muriel.ORM.Coluna", parametros)));
                 }
             }
         } catch (SQLException e) {
@@ -174,10 +174,6 @@ public class Persistencia {
         return object;
     }
 
-    private String capitalize(String str) {
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
-    }
-
     /**
      * Metodo que constroi tabelas para o banco.
      * @param modelo Instancia de uma classe do pacote de modelos, com os atributos já definidos.
@@ -191,13 +187,6 @@ public class Persistencia {
         Field[] _f  =   modelo.getClass().getDeclaredFields();
         List<Field> f = Arrays.asList(_f);
         f.forEach(fi -> fi.setAccessible(true));
-
-        /*ArrayList<Coluna> cols_groups = new ArrayList<>();
-        cols_groups.add(new Coluna("id_grupo","INTEGER","PRIMARY KEY"));
-        cols_groups.add(new Coluna("descricao","",""));
-        ArrayList<String> conts_groups = new ArrayList<>();
-        Tabela tb_groups = new Tabela("", "grupo", cols_groups, conts_groups);
-        db.executar(tb_groups.toSQLCreate());*/
 
         String nomeTabela = relativeNomeClasse(modelo.getClass().getName()).toLowerCase();
 
@@ -215,8 +204,21 @@ public class Persistencia {
         return new Tabela(nomeTabela, colunas);
     }
 
+    public <T> void salvarObjeto(T objeto) {
+        String nomeTabela = relativeNomeClasse(objeto.getClass().getName()).toLowerCase();
+
+
+        System.out.println();
+    }
+
+    private String capitalize(String _str) {
+        String str = _str.substring(0, 1).toUpperCase() + _str.substring(1);
+        return str;
+    }
+
     private String relativeNomeClasse(String nm) {
-        return nm.substring(nm.lastIndexOf(".") + 1);
+        String str = nm.substring(nm.lastIndexOf(".") + 1);
+        return str;
     }
 
     private String convertAnotation(Annotation[] annotations) {

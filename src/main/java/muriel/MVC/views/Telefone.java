@@ -1,4 +1,4 @@
-package MVC.views;
+package muriel.MVC.views;
 
 public class Telefone {
 }
