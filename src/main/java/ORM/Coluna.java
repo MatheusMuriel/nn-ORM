@@ -16,7 +16,7 @@ public class Coluna{
      * Caso o parametro for vazio passar uma String vazia.
      * @param nome Nome da Coluna.
      * @param tipoDeDado DateType da coluna.(https://www.sqlite.org/syntax/type-name.html)
-     * @param constraint Constraints da coluna(NotNull, Unique, PrimaryKey, etc..)(https://www.sqlite.org/syntax/column-constraint.html)
+     * @param constraint Constraints da coluna(NotNull, Unico, ChavePrimaria, etc..)(https://www.sqlite.org/syntax/column-constraint.html)
      *
      * Toda coluna declarada como INTEGER PRIMARY KEY automaticamente tem auto increment. (https://www.sqlite.org/faq.html#q1)
      */

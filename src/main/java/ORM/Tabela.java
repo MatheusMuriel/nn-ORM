@@ -17,16 +17,12 @@ public class Tabela {
     /**
      * Metodo construtor padrão.
      * Caso o parametro for vazio passar uma String vazia.
-     * @param schema Schema da tabela.
      * @param nome Nome da tabela, Sem espacos.
      * @param colunas ArrayList de objetos "Coluna".
-     * @param constr Constraints da tabela(PrimaryKey, ForeignKey)(https://www.sqlite.org/syntax/table-constraint.html)
      */
-    public Tabela(String schema, String nome, ArrayList<Coluna> colunas, ArrayList<String> constr) {
-        this.schema = schema;
+    public Tabela(String nome, ArrayList<Coluna> colunas) {
         this.nome = nome;
         this.colunas = colunas;
-        this.constr = constr;
     }
 
     /**

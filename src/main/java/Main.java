@@ -12,7 +12,7 @@ public class Main{
         System.out.println("Hello World!");
         Persistencia db = new Persistencia();
 
-        //populateTables(db);
+        populateTables(db);
 
         /*
         populateContacts(db);
@@ -23,42 +23,32 @@ public class Main{
 
         //getAllContatos(db, "contatos");
 
-        Contato ct = new Contato("Jose", "Silva", "jose@silva.com");
-
-        db.construirTabela(ct);
     }
 
     public static void populateTables(Persistencia db){
         //Groups
-        ArrayList<Coluna> cols_groups = new ArrayList<>();
+        /*ArrayList<Coluna> cols_groups = new ArrayList<>();
         cols_groups.add(new Coluna("id_grupo","INTEGER","PRIMARY KEY"));
         cols_groups.add(new Coluna("descricao","",""));
         ArrayList<String> conts_groups = new ArrayList<>();
-        Tabela tb_groups = new Tabela("", "grupo", cols_groups, conts_groups);
-        db.executar(tb_groups.toSQLCreate());
+        Tabela tb_groups = new Tabela("grupo", cols_groups);
+        db.executar(tb_groups.toSQLCreate());*/
 
         //Contacts
-        ArrayList<Coluna> cols_contacts = new ArrayList<>();
-        cols_contacts.add(new Coluna("id_contato","INTEGER","PRIMARY KEY"));
-        cols_contacts.add(new Coluna("primeiro_nome","","NOT NULL"));
-        cols_contacts.add(new Coluna("ultimo_nome","",""));
-        cols_contacts.add(new Coluna("email","","UNIQUE"));
-        ArrayList<String> conts_contacts = new ArrayList<>();
-        conts_contacts.add("");
-        Tabela tb_contacts = new Tabela("", "contato", cols_contacts, conts_contacts);
-        db.executar(tb_contacts.toSQLCreate());
+        Contato contatos = new Contato();
+        db.executar( db.construirTabela(contatos).toSQLCreate() );
 
         //Phones
-        ArrayList<Coluna> cols_fones = new ArrayList<>();
+        /*ArrayList<Coluna> cols_fones = new ArrayList<>();
         cols_fones.add(new Coluna("id_telefone","INTEGER","PRIMARY KEY"));
         cols_fones.add(new Coluna("telefone","","NOT NULL"));
         ArrayList<String> conts_fones = new ArrayList<>();
         conts_fones.add("");
-        Tabela tb_telefones = new Tabela("", "telefone", cols_fones, conts_fones);
-        db.executar(tb_telefones.toSQLCreate());
+        Tabela tb_telefones = new Tabela("telefone", cols_fones);
+        db.executar(tb_telefones.toSQLCreate());*/
 
-        createRelation(db, tb_contacts,tb_groups,Relacao.N_N);
-        createRelation(db, tb_contacts,tb_telefones,Relacao.N_N);
+        //createRelation(db, tb_contacts,tb_groups,Relacao.N_N);
+        //createRelation(db, tb_contacts,tb_telefones,Relacao.N_N);
     }
 
     public static void populateContacts(Persistencia db) {
@@ -112,9 +102,7 @@ public class Main{
             ref2.add(tb2.getNome());
             conls_rel.add(new Coluna(tb2.getNome(),"", ref2.toString()));
 
-            ArrayList<String> conts_rel = new ArrayList<>();
-
-            Tabela tb_rel = new Tabela("", tb1.getNome().concat("_").concat(tb2.getNome()), conls_rel, conts_rel);
+            Tabela tb_rel = new Tabela(tb1.getNome().concat("_").concat(tb2.getNome()), conls_rel);
 
             db.executar(tb_rel.toSQLCreate());
         }

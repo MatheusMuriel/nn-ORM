@@ -6,9 +6,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.StringJoiner;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class Persistencia {
     Connection conn;
@@ -167,15 +167,7 @@ public class Persistencia {
             Class<?> clazz = Class.forName(nome);
             Constructor<?> ctor = clazz.getConstructor(HashMap.class);
             object = ctor.newInstance(parametros);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -186,19 +178,79 @@ public class Persistencia {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
-    public <T> void construirTabela(T modelo) {
+    /**
+     * Metodo que constroi tabelas para o banco.
+     * @param modelo Instancia de uma classe do pacote de modelos, com os atributos já definidos.
+     * @param <T> Classe generica.
+     * Referencias de Annotations:
+     * https://www.devmedia.com.br/como-criar-anotacoes-em-java/32461
+     * https://www.guj.com.br/t/ler-annotation-de-uma-classe/100443
+     */
+    public <T> Tabela construirTabela(T modelo) {
 
-        Field[] f  =   modelo.getClass().getDeclaredFields();
-        System.out.println("Os Campos da Classe São : ");
+        Field[] _f  =   modelo.getClass().getDeclaredFields();
+        List<Field> f = Arrays.asList(_f);
+        f.forEach(fi -> fi.setAccessible(true));
 
-        for (int i = 0 ; i < f.length ; i++){
-            f[i].setAccessible(true);
-            try {
-                Annotation[] ant = f[i].getAnnotations();
-                System.out.println("Nome : " + f[i].getName() + "  Valor: " + f[i].get(modelo) + "  Anotantion: " + f[i].getAnnotations());
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+        /*ArrayList<Coluna> cols_groups = new ArrayList<>();
+        cols_groups.add(new Coluna("id_grupo","INTEGER","PRIMARY KEY"));
+        cols_groups.add(new Coluna("descricao","",""));
+        ArrayList<String> conts_groups = new ArrayList<>();
+        Tabela tb_groups = new Tabela("", "grupo", cols_groups, conts_groups);
+        db.executar(tb_groups.toSQLCreate());*/
+
+        String nomeTabela = relativeNomeClasse(modelo.getClass().getName()).toLowerCase();
+
+        ArrayList<Coluna> colunas = new ArrayList<>();
+
+        for (Field fi : f) {
+            String nomeColuna = fi.getName();
+            String tipoDeDado = converteTipo(fi.getType().getName());
+            String constraints = convertAnotation(fi.getAnnotations());
+
+            Coluna cl = new Coluna(nomeColuna, tipoDeDado, constraints);
+            colunas.add(cl);
+        }
+
+        return new Tabela(nomeTabela, colunas);
+    }
+
+    private String relativeNomeClasse(String nm) {
+        return nm.substring(nm.lastIndexOf(".") + 1);
+    }
+
+    private String convertAnotation(Annotation[] annotations) {
+        StringJoiner sj = new StringJoiner(" ");
+
+        for (Annotation an : annotations) {
+            String nm = relativeNomeClasse(an.annotationType().getName());
+
+            switch (nm.toUpperCase()){
+                case "CHAVEPRIMARIA":
+                    sj.add("PRIMARY KEY");
+                    break;
+                case "UNICO":
+                    sj.add("UNIQUE");
+                    break;
+                default:
+                    System.err.println("Tentativa de conversão de annotation de tipo desconhecido.");
+                    break;
             }
+        }
+
+        return sj.toString();
+    }
+
+    private String converteTipo(String name) {
+        name = relativeNomeClasse(name);
+        switch (name.toUpperCase()){
+            case "INT":
+                return "INTEGER";
+            case "STRING":
+                return "TEXT";
+            default:
+                System.out.println("Tentativa de conversão de dado de tipo desconhecido.");
+                return "";
         }
     }
 }
