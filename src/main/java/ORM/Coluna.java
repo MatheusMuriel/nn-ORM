@@ -9,7 +9,7 @@ import java.util.StringJoiner;
 public class Coluna{
     String nome;
     String tipoDeDado;
-     String constraint;
+    String constraint;
 
     /**
      * Metodo construtor padrão.

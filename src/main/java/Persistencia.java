@@ -1,13 +1,11 @@
 import ORM.Coluna;
 import ORM.Tabela;
-import javafx.scene.control.Tab;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.StringJoiner;
 
 public class Persistencia {
@@ -16,9 +14,9 @@ public class Persistencia {
 
     public Persistencia(){
         conectar();
-        carregarTodosOsDados();
+        carregarTabelas();
         carregaColunas();
-        getTabelaPorNome("contatos");
+        getTabelaPorNome("contato");
     }
 
     public void conectar(){
@@ -81,7 +79,7 @@ public class Persistencia {
     /**
      * Metodo responsavel por carregar todos os dados do banco e os transformar em objetos.
      */
-    private void carregarTodosOsDados() {
+    private void carregarTabelas() {
         String slctTodasAsTabelas = "SELECT * FROM sqlite_master WHERE type='table' AND name NOT LIKE '%sqlite%';";
         ResultSet rst = executarSelect(slctTodasAsTabelas);
 
@@ -89,8 +87,14 @@ public class Persistencia {
             while (rst.next()) {
                 String nomeTabela = rst.getString("name");
 
+                StringJoiner sj = new StringJoiner(".");
+                sj.add("MVC");
+                sj.add("modelos");
+                sj.add(capitalize(nomeTabela));
+
                 HashMap<String, String> parametros = new HashMap<>();
                 parametros.put("nome", nomeTabela);
+                parametros.put("modelo", sj.toString());
 
                 this.tabelas.add(Tabela.class.cast(createClass("ORM.Tabela", parametros)));
             }
@@ -107,6 +111,33 @@ public class Persistencia {
                 ResultSet rst = executarSelect(slctDadosTabela);
 
                 while (rst.next()) {
+                    String nomeColuna = rst.getString("name");
+                    String tipoColuna = rst.getString("type");
+
+                    HashMap<String, String> parametros = new HashMap<>();
+                    parametros.put("nome", nomeColuna);
+                    parametros.put("tipoDeDado", tipoColuna);
+
+                    tb.adicionarColuna(Coluna.class.cast(createClass("ORM.Coluna", parametros)));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void carregaDados() {
+        try {
+            for (Tabela tb : this.tabelas) {
+                String nomeTab = tb.getNome();
+                String slctDadosTabela = "SELECT * FROM " + nomeTab + ";";
+                ResultSet rst = executarSelect(slctDadosTabela);
+
+                while (rst.next()) {
+
+                    for (Coluna c : tb.getColunas()) {
+
+                    }
                     String nomeColuna = rst.getString("name");
                     String tipoColuna = rst.getString("type");
 
@@ -149,4 +180,7 @@ public class Persistencia {
         return object;
     }
 
+    private String capitalize(String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
 }
