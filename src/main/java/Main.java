@@ -29,19 +29,49 @@ public class Main{
 
     public static void populateTables(Persistencia db){
         //Groups
-        Grupo grupo = new Grupo();
-        db.executar( db.construirTabela(grupo).toSQLCreate() );
+        Tabela grupo = db.construirTabela(new Grupo());
+        db.executar( grupo.toSQLCreate() );
 
         //Contacts
-        Contato contatos = new Contato();
-        db.executar( db.construirTabela(contatos).toSQLCreate() );
+        Tabela contato = db.construirTabela(new Contato());
+        db.executar( contato.toSQLCreate() );
 
         //Phones
-        Telefone telefone = new Telefone();
-        db.executar( db.construirTabela(telefone).toSQLCreate() );
+        Tabela telefone = db.construirTabela(new Telefone());
+        db.executar( telefone.toSQLCreate() );
 
-        //createRelation(db, tb_contacts,tb_groups,Relacao.N_N);
-        //createRelation(db, tb_contacts,tb_telefones,Relacao.N_N);
+        createRelation(db, contato, grupo, Relacao.N_N);
+        createRelation(db, contato, telefone, Relacao.N_N);
+    }
+
+    /**
+     * Metodo para criar uma tabela de relacionamento.
+     * @param db Instancia da classe de persistencia.
+     * @param tb1 Tabela1 da relação.
+     * @param tb2 Tabela2 da relação.
+     * @param rl Enum com o tipo de ralação.
+     */
+    private static void createRelation(Persistencia db, Tabela tb1, Tabela tb2, Relacao rl){
+
+        if (rl.equals(Relacao.N_N)){
+            //Tabela relacionamento
+            ArrayList<Coluna> colunas = new ArrayList<>();
+
+            StringJoiner coluna01 = new StringJoiner(" ");
+            coluna01.add("REFERENCES");
+            coluna01.add( tb1.getNome() );
+            colunas.add(new Coluna(tb1.getNome(),"", coluna01.toString()));
+
+            StringJoiner coluna02 = new StringJoiner(" ");
+            coluna02.add("REFERENCES");
+            coluna02.add(tb2.getNome());
+            colunas.add(new Coluna(tb2.getNome(),"", coluna02.toString()));
+
+            Tabela tb_rel = new Tabela(tb1.getNome().concat("_").concat(tb2.getNome()), colunas);
+
+            db.executar(tb_rel.toSQLCreate());
+        }
+
     }
 
     public static void populateContacts(Persistencia db) {
@@ -77,29 +107,6 @@ public class Main{
         adicionaGrupo(db, "Trabalho");
         adicionaGrupo(db, "RPG");
         adicionaGrupo(db, "Teatro");
-    }
-
-    private static void createRelation(Persistencia db, Tabela tb1, Tabela tb2, Relacao rl){
-
-        if (rl.equals(Relacao.N_N)){
-            //Tabela relacionamento
-            ArrayList<Coluna> conls_rel = new ArrayList<>();
-
-            StringJoiner ref1 = new StringJoiner(" ");
-            ref1.add("REFERENCES");
-            ref1.add(tb1.getNome());
-            conls_rel.add(new Coluna(tb1.getNome(),"", ref1.toString()));
-
-            StringJoiner ref2 = new StringJoiner(" ");
-            ref2.add("REFERENCES");
-            ref2.add(tb2.getNome());
-            conls_rel.add(new Coluna(tb2.getNome(),"", ref2.toString()));
-
-            Tabela tb_rel = new Tabela(tb1.getNome().concat("_").concat(tb2.getNome()), conls_rel);
-
-            db.executar(tb_rel.toSQLCreate());
-        }
-
     }
 
     /**
