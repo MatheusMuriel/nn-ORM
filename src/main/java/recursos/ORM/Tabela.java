@@ -11,7 +11,7 @@ public class Tabela {
     String schema;
     String nome;
     ArrayList<Coluna> colunas = new ArrayList<>();
-    ArrayList<?> linhas;
+    ArrayList<Object> linhas = new ArrayList<>();
     ArrayList<String> constr; //https://www.sqlite.org/syntax/table-constraint.html
 
     /**
@@ -35,7 +35,7 @@ public class Tabela {
             if (parametros.containsKey("nome")) this.nome = parametros.get("nome");
             if (parametros.containsKey("modelo")) {
                 Class<?> clazz = Class.forName(parametros.get("modelo"));
-                this.linhas = instanceArray(clazz);
+                //this.linhas = instanceArray(clazz);
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -101,5 +101,9 @@ public class Tabela {
 
     public ArrayList<String> getConstr() {
         return constr;
+    }
+
+    public void adicionarObjeto(Object objeto) {
+        this.linhas.add(objeto);
     }
 }

@@ -19,6 +19,8 @@ public class Persistencia {
         carregarTabelas();
         //carregaColunas();
         //getTabelaPorNome("contato");
+
+        System.out.println();
     }
 
     public void conectar(){
@@ -71,6 +73,13 @@ public class Persistencia {
         return tabelas;
     }
 
+    public <T> ArrayList<Tabela> getTabelaPorClasse(Class<T> tClass) {
+
+        String nomeTClass = Utils.relativeNomeClasse(tClass.getName());
+
+        return getTabelaPorNome(nomeTClass);
+    }
+
     /**
      * Metodo responsavel por carregar as tabelas do banco
      * (com exceção das tabelas de controle do sqlite), às
@@ -107,16 +116,14 @@ public class Persistencia {
             while (rst.next()) {
                 String nomeTabela = rst.getString("name");
 
-                StringJoiner sj = new StringJoiner(".");
-                sj.add("recursos.MVC.modelos");
-                sj.add(Utils.capitalize(nomeTabela));
+                String nomeModelo = Utils.getModeloPorNome(nomeTabela);
 
                 HashMap<String, String> parametros = new HashMap<>();
                 parametros.put("nome", nomeTabela);
-                parametros.put("modelo", sj.toString());
+                parametros.put("modelo", nomeModelo);
 
                 Class classeORMTabela = Tabela.class;
-                Object objClass = createClass(classeORMTabela.getName(), parametros);
+                Object objClass = Utils.createClass(classeORMTabela.getName(), parametros);
                 tabelaDeSaida.add((Tabela) objClass);
             }
         } catch (SQLException e) {
@@ -144,7 +151,7 @@ public class Persistencia {
                     parametros.put("nome", nomeColuna);
                     parametros.put("tipoDeDado", tipoColuna);
 
-                    tb.adicionarColuna(Coluna.class.cast(createClass("muriel.ORM.Coluna", parametros)));
+                    tb.adicionarColuna(Coluna.class.cast(Utils.createClass("muriel.ORM.Coluna", parametros)));
                 }
             }
         } catch (SQLException e) {
@@ -161,9 +168,20 @@ public class Persistencia {
 
                 while (rst.next()) {
 
-                    for (Coluna c : tb.getColunas()) {
+/*                    String nomeTabela = rst.getString("name");
 
-                    }
+                    StringJoiner sj = new StringJoiner(".");
+                    sj.add("recursos.MVC.modelos");
+                    sj.add(Utils.capitalize(nomeTabela));
+
+                    HashMap<String, String> parametros = new HashMap<>();
+                    parametros.put("nome", nomeTabela);
+                    parametros.put("modelo", sj.toString());
+
+                    Class classeORMTabela = Tabela.class;
+                    Object objClass = createClass(classeORMTabela.getName(), parametros);
+                    tabelaDeSaida.add((Tabela) objClass);
+
                     String nomeColuna = rst.getString("name");
                     String tipoColuna = rst.getString("type");
 
@@ -171,7 +189,7 @@ public class Persistencia {
                     parametros.put("nome", nomeColuna);
                     parametros.put("tipoDeDado", tipoColuna);
 
-                    tb.adicionarColuna(Coluna.class.cast(createClass("muriel.ORM.Coluna", parametros)));
+                    tb.adicionarColuna(Coluna.class.cast(createClass("muriel.ORM.Coluna", parametros)));*/
                 }
             }
         } catch (SQLException e) {
@@ -194,25 +212,6 @@ public class Persistencia {
 
             executar(comandoDrop.toString());
         }
-    }
-
-    /**
-     * https://stackoverflow.com/questions/6094575/creating-an-instance-using-the-class-name-and-calling-constructor
-     * @param nome Nome da classe a ser instanciada.
-     * @return Objeto que é uma instancia da classe com o nome informado.
-     */
-    private Object createClass(String nome, HashMap<String, String> parametros) {
-        Object object = null;
-
-        try {
-            Class<?> clazz = Class.forName(nome);
-            Constructor<?> ctor = clazz.getConstructor(HashMap.class);
-            object = ctor.newInstance(parametros);
-        } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return object;
     }
 
     /**
@@ -297,6 +296,17 @@ public class Persistencia {
     public <T> void salvarObjeto(T objeto) {
         String nomeTabela = Utils.relativeNomeClasse(objeto.getClass().getName()).toLowerCase();
 
+        Tabela tabelaDoObjeto = this.tabelas.stream()
+            .filter(tb -> tb.getNome().equals(nomeTabela))
+            .findAny()
+            .orElse(null);
+
+        if (tabelaDoObjeto != null) {
+            tabelaDoObjeto.adicionarObjeto(objeto);
+        } else {
+            System.err.println("Tabela desconhecida.");
+        }
+
         List<Field> f = getAtributos(objeto);
         f.forEach(fi -> fi.setAccessible(true));
 
@@ -378,6 +388,42 @@ public class Persistencia {
                 default:
                     System.out.println("Tentativa de conversão de dado de tipo desconhecido.");
                     return "";
+            }
+        }
+
+        /**
+         * https://stackoverflow.com/questions/6094575/creating-an-instance-using-the-class-name-and-calling-constructor
+         * @param nome Nome da classe a ser instanciada.
+         * @return Objeto que é uma instancia da classe com o nome informado.
+         */
+        private static Object createClass(String nome, HashMap<String, String> parametros) {
+            Object object = null;
+
+            try {
+                Class<?> clazz = Class.forName(nome);
+                Constructor<?> ctor = clazz.getConstructor(HashMap.class);
+                object = ctor.newInstance(parametros);
+            } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            return object;
+        }
+
+        private static <T> Class getModeloPorNome(String nome) {
+            StringJoiner sj = new StringJoiner(".");
+            sj.add("recursos.MVC.modelos");
+            sj.add(capitalize(nome));
+
+            Class<?> clazz = null;
+            try {
+                clazz = Class.forName(sj.toString());
+                Constructor<?> ctor = clazz.getConstructor();
+                Object object = ctor.newInstance();
+                return object.getClass();
+            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                e.printStackTrace();
+                return null;
             }
         }
     }

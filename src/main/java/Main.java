@@ -14,11 +14,12 @@ public class Main{
         System.out.println("Hello World!");
         Persistencia db = new Persistencia();
 
-        db.droparTodasAsTabelas();
+        //db.droparTodasAsTabelas();
 
         //criarTabelas(db);
 
-        //Populate.populateTabelas(db);
+        Populate.populateTabelas(db);
+        System.out.println();
     }
 
     /**
