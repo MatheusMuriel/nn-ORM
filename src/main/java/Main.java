@@ -18,18 +18,7 @@ public class Main{
 
         //criarTabelas(db);
 
-        //populateTabelas(db);
-    }
-
-    /**
-     * Metodo apenas para desenvolvimento.
-     * Poputa as tabelas com alguns dados.
-     * @param db Instancia de persistencia.
-     */
-    private static void populateTabelas(Persistencia db) {
-        populateContatos(db);
-        populateGrupos(db);
-        populateTelefones(db);
+        //Populate.populateTabelas(db);
     }
 
     /**
@@ -83,183 +72,59 @@ public class Main{
         }
     }
 
-    /**
-     * Metodo para popular a tabela de Contatos com alguns dados de exemplo.
-     * @param db Instancia de persistencia.
-     */
-    public static void populateContatos(Persistencia db) {
-        recursos.MVC.controles.Contato contControl = new recursos.MVC.controles.Contato();
-        contControl.novoContato(db, "Jose", "Silva", "jose.silva@gmail.com");
-        contControl.novoContato(db, "Maria", "Antonia", "maria_antonia@gmail.com");
-        contControl.novoContato(db, "Roberto", "Souza", "robert-souza@gmail.com");
-    }
-
-    /**
-     * Metodo para popular a tabela de Telefones com alguns dados de exemplo.
-     * @param db Instancia de persistencia.
-     */
-    public static void populateTelefones (Persistencia db) {
-        recursos.MVC.controles.Telefone telefControl = new recursos.MVC.controles.Telefone();
-        telefControl.novoTelefone(db, "99999-9999");
-        telefControl.novoTelefone(db, "88888-8888");
-        telefControl.novoTelefone(db, "77777-7777");
-        telefControl.novoTelefone(db, "66666-6666");
-        telefControl.novoTelefone(db, "55555-5555");
-    }
-
-    /**
-     * Metodo para popular a tabela de Grupos com alguns dados de exemplo.
-     * @param db Instancia de persistencia.
-     */
-    public static void populateGrupos (Persistencia db) {
-        recursos.MVC.controles.Grupo grupControl = new recursos.MVC.controles.Grupo();
-        grupControl.novoGrupo(db, "Familia");
-        grupControl.novoGrupo(db, "Escola");
-        grupControl.novoGrupo(db, "Trabalho");
-        grupControl.novoGrupo(db, "RPG");
-        grupControl.novoGrupo(db, "Teatro");
-    }
-
-    public static void populateContatoTelefone (Persistencia db) {
-        adicionaContatoNumero(db,"C1", "99999-9999");
-    }
-
-    public static void populateContatoGrupo (Persistencia db) {
-        adicionaNumero(db, "99999-9999");
-        adicionaNumero(db, "88888-8888");
-        adicionaNumero(db, "77777-7777");
-        adicionaNumero(db, "66666-6666");
-        adicionaNumero(db, "55555-5555");
-    }
-
-    /**
-     * Metodo que adiciona um contato.
-     * @param db Objeto de persistencia.
-     * @param nome Nome do contato.
-     * @param sobreNome Sobre nome do contato.
-     * @param email Email do contato.
-     */
-    public static void adicionarContato(Persistencia db, String nome, String sobreNome, String email) {
-
-        ArrayList<String> colunas = new ArrayList<>();
-        ArrayList<String> valores = new ArrayList<>();
-
-        colunas.add("primeiro_nome");
-        colunas.add("ultimo_nome");
-        colunas.add("email");
-
-        valores.add(nome);
-        valores.add(sobreNome);
-        valores.add(email);
-
-        //genericInsert(db,"contatos", colunas, valores);
-    }
-
-    /**
-     * Metodo que adiciona um numero de telefone.
-     * @param db Objeto de persistencia.
-     * @param numero Numero a ser adicionado.
-     */
-    public static void adicionaNumero(Persistencia db, String numero) {
-
-        ArrayList<String> colunas = new ArrayList<>();
-        ArrayList<String> valores = new ArrayList<>();
-
-        colunas.add("telefone");
-
-        valores.add(numero);
-
-        //genericInsert(db,"telefones", colunas, valores);
-
-    }
-
-    /**
-     * Adiciona na tabela de relacionamento uma relação entre um contato e um numero
-     * @param db Objeto de persistencia.
-     * @param contato Contato da relação
-     * @param numero Numero da relação
-     */
-    public static void adicionaContatoNumero(Persistencia db, String contato, String numero) {
-        ArrayList<String> colunas = new ArrayList<>();
-        ArrayList<String> valores = new ArrayList<>();
-
-        colunas.add("contatos");
-        colunas.add("telefones");
-
-        valores.add(contato);
-        valores.add(numero);
-
-        //genericInsert(db,"contatos_grupos", colunas, valores);
-    }
-
-    /**
-     * Adiciona na tabela de relacionamento uma relação entre um contato e um grupo
-     * @param db Objeto de persistencia.
-     * @param contato Contato da relação
-     * @param grupo Grupo da relação
-     */
-    public static void adicionaContatoGrupo(Persistencia db, String contato, String grupo) {
-        ArrayList<String> colunas = new ArrayList<>();
-        ArrayList<String> valores = new ArrayList<>();
-
-        colunas.add("contatos");
-        colunas.add("grupos");
-
-        valores.add(contato);
-        valores.add(grupo);
-
-        //genericInsert(db,"contatos_grupos", colunas, valores);
-    }
-
-    /**
-     * Metodo que adiciona um grupo de contatos.
-     * @param db Objeto de persistencia.
-     * @param descricao descrição do grupo a ser adicionado.
-     */
-    public static void adicionaGrupo(Persistencia db, String descricao) {
-
-        ArrayList<String> colunas = new ArrayList<>();
-        ArrayList<String> valores = new ArrayList<>();
-
-        colunas.add("descricao");
-
-        valores.add(descricao);
-
-        //genericInsert(db,"grupos", colunas, valores);
-
-    }
-
-    private static void getAllContatos(Persistencia db, String tabela){
-        StringJoiner sj = new StringJoiner(" ");
-
-        sj.add("SELECT");
-
-        sj.add("*");
-
-        sj.add("FROM");
-
-        sj.add(tabela);
-
-        try{
-            db.executarSelect(sj.toString());
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private static void getContatoPorTelefone(Persistencia db){
-
-    }
-
-    private static void getContatoPorNome(Persistencia db){
-
-    }
-
-    private static void genericSelect(Persistencia db, String tabela) {
-
-    }
-
     enum Relacao{
         N_N
+    }
+
+    static class Populate {
+
+        /**
+         * Metodo apenas para desenvolvimento.
+         * Poputa as tabelas com alguns dados.
+         * @param db Instancia de persistencia.
+         */
+        private static void populateTabelas(Persistencia db) {
+            populateContatos(db);
+            populateGrupos(db);
+            populateTelefones(db);
+        }
+
+        /**
+         * Metodo para popular a tabela de Contatos com alguns dados de exemplo.
+         * @param db Instancia de persistencia.
+         */
+        public static void populateContatos(Persistencia db) {
+            recursos.MVC.controles.Contato contControl = new recursos.MVC.controles.Contato();
+            contControl.novoContato(db, "Jose", "Silva", "jose.silva@gmail.com");
+            contControl.novoContato(db, "Maria", "Antonia", "maria_antonia@gmail.com");
+            contControl.novoContato(db, "Roberto", "Souza", "robert-souza@gmail.com");
+        }
+
+        /**
+         * Metodo para popular a tabela de Telefones com alguns dados de exemplo.
+         * @param db Instancia de persistencia.
+         */
+        public static void populateTelefones (Persistencia db) {
+            recursos.MVC.controles.Telefone telefControl = new recursos.MVC.controles.Telefone();
+            telefControl.novoTelefone(db, "99999-9999");
+            telefControl.novoTelefone(db, "88888-8888");
+            telefControl.novoTelefone(db, "77777-7777");
+            telefControl.novoTelefone(db, "66666-6666");
+            telefControl.novoTelefone(db, "55555-5555");
+        }
+
+        /**
+         * Metodo para popular a tabela de Grupos com alguns dados de exemplo.
+         * @param db Instancia de persistencia.
+         */
+        public static void populateGrupos (Persistencia db) {
+            recursos.MVC.controles.Grupo grupControl = new recursos.MVC.controles.Grupo();
+            grupControl.novoGrupo(db, "Familia");
+            grupControl.novoGrupo(db, "Escola");
+            grupControl.novoGrupo(db, "Trabalho");
+            grupControl.novoGrupo(db, "RPG");
+            grupControl.novoGrupo(db, "Teatro");
+        }
+
     }
 }
