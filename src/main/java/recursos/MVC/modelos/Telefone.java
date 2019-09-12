@@ -1,5 +1,8 @@
 package recursos.MVC.modelos;
 
+import java.util.HashMap;
+import java.util.StringJoiner;
+
 public class Telefone {
     @ChavePrimaria
     int id_telefone;
@@ -22,6 +25,11 @@ public class Telefone {
 
     }
 
+    public Telefone(HashMap<String, String > hashMap) {
+        this.id_telefone = Integer.parseInt(hashMap.get("id_telefone"));
+        this.telefone = hashMap.get("telefone");
+    }
+
     public int getId_telefone() {
         return id_telefone;
     }
@@ -36,5 +44,12 @@ public class Telefone {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    @Override
+    public String toString() {
+        StringJoiner sj = new StringJoiner(" ");
+        sj.add(this.telefone);
+        return sj.toString();
     }
 }

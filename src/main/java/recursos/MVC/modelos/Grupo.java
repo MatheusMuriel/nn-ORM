@@ -1,5 +1,8 @@
 package recursos.MVC.modelos;
 
+import java.util.HashMap;
+import java.util.StringJoiner;
+
 public class Grupo {
     @ChavePrimaria
     int id_grupo;
@@ -21,6 +24,11 @@ public class Grupo {
 
     }
 
+    public Grupo(HashMap<String, String> hashMap) {
+        this.id_grupo = Integer.parseInt(hashMap.get("id_grupo"));
+        this.descricao_grupo = hashMap.get("descricao_grupo");
+    }
+
     public int getId_grupo() {
         return id_grupo;
     }
@@ -35,5 +43,12 @@ public class Grupo {
 
     public void setDescricao_grupo(String descricao_grupo) {
         this.descricao_grupo = descricao_grupo;
+    }
+
+    @Override
+    public String toString() {
+        StringJoiner sj = new StringJoiner(" ");
+        sj.add(this.descricao_grupo);
+        return sj.toString();
     }
 }

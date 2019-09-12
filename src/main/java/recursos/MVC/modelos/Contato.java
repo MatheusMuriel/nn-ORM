@@ -1,6 +1,9 @@
 package recursos.MVC.modelos;
 
 
+import java.util.HashMap;
+import java.util.StringJoiner;
+
 public class Contato {
     @ChavePrimaria
     int id_contato;
@@ -27,6 +30,13 @@ public class Contato {
      */
     public Contato() {
 
+    }
+
+    public Contato(HashMap<String, String > hashMap) {
+        this.id_contato = Integer.parseInt(hashMap.get("id_contato"));
+        this.primeiro_nome = hashMap.get("primeiro_nome");
+        this.ultimo_nome = hashMap.get("ultimo_nome");
+        this.email = hashMap.get("email");
     }
 
     public int getId_contato() {
@@ -59,5 +69,15 @@ public class Contato {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        StringJoiner sj = new StringJoiner(" ");
+        sj.add(this.primeiro_nome);
+        sj.add(this.ultimo_nome);
+        sj.add(" :: ");
+        sj.add(this.email);
+        return sj.toString();
     }
 }

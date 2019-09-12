@@ -17,6 +17,7 @@ public class Persistencia {
     public Persistencia(){
         conectar();
         carregarTabelas();
+        carregaDados();
         //carregaColunas();
         //getTabelaPorNome("contato");
 
@@ -116,7 +117,7 @@ public class Persistencia {
             while (rst.next()) {
                 String nomeTabela = rst.getString("name");
 
-                String nomeModelo = Utils.getModeloPorNome(nomeTabela);
+                String nomeModelo = Utils.relativeNomeClasse(Objects.requireNonNull(Utils.getModeloPorNome(nomeTabela)).getName());
 
                 HashMap<String, String> parametros = new HashMap<>();
                 parametros.put("nome", nomeTabela);
@@ -166,30 +167,19 @@ public class Persistencia {
                 String slctDadosTabela = "SELECT * FROM " + nomeTab + ";";
                 ResultSet rst = executarSelect(slctDadosTabela);
 
+                HashMap<String, String> parametros = new HashMap<>();
+                String nomeClaseObjeto = "recursos.MVC.modelos." + Utils.capitalize(nomeTab);
+
+                ResultSetMetaData rsmd = rst.getMetaData();
+
                 while (rst.next()) {
-
-/*                    String nomeTabela = rst.getString("name");
-
-                    StringJoiner sj = new StringJoiner(".");
-                    sj.add("recursos.MVC.modelos");
-                    sj.add(Utils.capitalize(nomeTabela));
-
-                    HashMap<String, String> parametros = new HashMap<>();
-                    parametros.put("nome", nomeTabela);
-                    parametros.put("modelo", sj.toString());
-
-                    Class classeORMTabela = Tabela.class;
-                    Object objClass = createClass(classeORMTabela.getName(), parametros);
-                    tabelaDeSaida.add((Tabela) objClass);
-
-                    String nomeColuna = rst.getString("name");
-                    String tipoColuna = rst.getString("type");
-
-                    HashMap<String, String> parametros = new HashMap<>();
-                    parametros.put("nome", nomeColuna);
-                    parametros.put("tipoDeDado", tipoColuna);
-
-                    tb.adicionarColuna(Coluna.class.cast(createClass("muriel.ORM.Coluna", parametros)));*/
+                    for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                        String nomeColua = rsmd.getColumnName(i);
+                        String valorColuna = rst.getString(nomeColua);
+                        parametros.put(nomeColua, valorColuna);
+                    }
+                    Object o = Utils.createClass(nomeClaseObjeto,parametros);
+                    tb.adicionarObjeto(o);
                 }
             }
         } catch (SQLException e) {
