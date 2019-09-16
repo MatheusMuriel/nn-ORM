@@ -21,6 +21,13 @@ public class Persistencia {
         carregaColunas();
     }
 
+    public Persistencia(boolean populate){
+
+        if (populate){
+            conectar();
+        }
+    }
+
     public void conectar(){
         try {
             this.conn = DriverManager.getConnection("jdbc:sqlite:banco.sqlite");
@@ -112,14 +119,14 @@ public class Persistencia {
             String adicaoParaTodas = " AND name NOT LIKE '%\\_%' ESCAPE '\\'";
             slctTodasAsTabelas += adicaoParaTodas;
         }
-
         ResultSet rst = executarSelect(slctTodasAsTabelas);
 
         try {
             while (rst.next()) {
                 String nomeTabela = rst.getString("name");
 
-                String nomeModelo = Utils.relativeNomeClasse(Objects.requireNonNull(Utils.getModeloPorNome(nomeTabela)).getName());
+                Object o = Objects.requireNonNull( Utils.getModeloPorNome(nomeTabela) );
+                String nomeModelo = Utils.relativeNomeClasse(o.getClass().getName());
 
                 HashMap<String, String> parametros = new HashMap<>();
                 parametros.put("nome", nomeTabela);
@@ -134,6 +141,12 @@ public class Persistencia {
         }
 
         return tabelaDeSaida;
+    }
+
+    private ResultSet getTabelasOcultas() {
+        String slctTodasAsTabelas = "SELECT * FROM sqlite_master WHERE type='table' AND name NOT LIKE '%sqlite%'";
+        ResultSet rst = executarSelect(slctTodasAsTabelas);
+        return rst;
     }
 
     /**
@@ -194,16 +207,37 @@ public class Persistencia {
      * Metodo apenas para ambiente de desenvolvimento.
      * Dropa todas as tabelas do banco.
      */
-    public void droparTodasAsTabelas() {
+    public static void droparTodasAsTabelas() {
+        try {
+            String slctTodasAsTabelas = "SELECT * FROM sqlite_master WHERE type='table' AND name NOT LIKE '%sqlite%'";
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:banco.sqlite");
+            Statement stm = conn.createStatement();
+            ResultSet rst = stm.executeQuery(slctTodasAsTabelas);
 
-        ArrayList<Tabela> todasAsTabelas = carregarListaTabelas(true);
-        for (Tabela t : todasAsTabelas) {
-            StringJoiner comandoDrop = new StringJoiner(" ");
-            comandoDrop.add("DROP");
-            comandoDrop.add("TABLE");
-            comandoDrop.add(t.getNome());
 
-            executar(comandoDrop.toString());
+            ArrayList<String> tabelas = new ArrayList<>();
+
+            while (rst.next()) {
+                String nomeTabela = rst.getString("name");
+                tabelas.add(nomeTabela);
+            }
+
+            tabelas.forEach(s -> {
+                StringJoiner comandoDrop = new StringJoiner(" ");
+                comandoDrop.add("DROP");
+                comandoDrop.add("TABLE");
+                comandoDrop.add(s);
+
+                try {
+                    Statement stm_ = conn.createStatement();
+                    stm_.execute(comandoDrop.toString());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

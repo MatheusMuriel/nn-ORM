@@ -31,14 +31,10 @@ public class Tabela {
      */
     public Tabela(HashMap<String, String> parametros) {
 
-        try {
-            if (parametros.containsKey("nome")) this.nome = parametros.get("nome");
-            if (parametros.containsKey("modelo")) {
-                Class<?> clazz = Class.forName(parametros.get("modelo"));
-                //this.linhas = instanceArray(clazz);
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        if (parametros.containsKey("nome")) this.nome = parametros.get("nome");
+        if (parametros.containsKey("modelo")) {
+            // Class<?> clazz = Class.forName(parametros.get("modelo"));
+            //this.linhas = instanceArray(clazz);
         }
 
     }
