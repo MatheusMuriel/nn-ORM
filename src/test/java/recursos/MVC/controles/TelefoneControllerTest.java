@@ -24,6 +24,12 @@ class TelefoneControllerTest {
 
     @Test
     void novoTelefone() {
+        Populate.trucateTelefones();
+
+        // Re instancia a percistencia porcausa do truncamento dos dados
+        this.db = new Persistencia();
+        TelefoneController tCtrl = new TelefoneController(db);
+        assert ( tCtrl.procurar("").size() == 0 );
     }
 
     @Test

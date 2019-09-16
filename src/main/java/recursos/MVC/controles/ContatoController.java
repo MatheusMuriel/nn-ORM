@@ -16,10 +16,6 @@ public class ContatoController implements Controller<Contato> {
         this.db = db;
     }
 
-    public void novoContato(String nome, String sobreNome) {
-        novoContato(nome, sobreNome, "");
-    }
-
     public void novoContato(String nome, String sobreNome, String email) {
         Contato newContato = new Contato(nome, sobreNome, email);
         this.adicionar(newContato);

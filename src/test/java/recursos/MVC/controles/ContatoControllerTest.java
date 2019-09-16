@@ -26,10 +26,12 @@ class ContatoControllerTest {
 
     @Test
     void novoContato() {
-    }
+        Populate.trucateContatos();
 
-    @Test
-    void novoContato1() {
+        // Re instancia a percistencia porcausa do truncamento dos dados
+        this.db = new Persistencia();
+        ContatoController cCtrl = new ContatoController(db);
+        assert ( cCtrl.procurar("").size() == 0 );
     }
 
     @Test

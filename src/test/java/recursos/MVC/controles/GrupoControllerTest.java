@@ -24,6 +24,12 @@ class GrupoControllerTest {
 
     @Test
     void novoGrupo() {
+        Populate.trucateGrupos();
+
+        // Re instancia a percistencia porcausa do truncamento dos dados
+        this.db = new Persistencia();
+        GrupoController gCtrl = new GrupoController(db);
+        assert ( gCtrl.procurar("").size() == 0 );
     }
 
     @Test
