@@ -102,4 +102,10 @@ public class Populate {
         grupControl.novoGrupo("Teatro");
     }
 
+    /**
+     * Metodo somente para desenvolvimento.
+     */
+    public static void trucateGrupos() {
+        Persistencia.truncarTabelaPorClasse(Grupo.class);
+    }
 }

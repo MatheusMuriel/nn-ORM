@@ -1,5 +1,6 @@
 package recursos;
 
+import recursos.MVC.modelos.Grupo;
 import recursos.ORM.Coluna;
 import recursos.ORM.Tabela;
 
@@ -369,6 +370,29 @@ public class Persistencia {
         return f;
     }
 
+    /**
+     * https://www.sqlite.org/lang_delete.html
+     * @param tClass
+     * @param <T>
+     */
+    public static <T> void truncarTabelaPorClasse(Class<T> tClass) {
+        Class clas = Utils.getModeloPorClasse(tClass);
+        String nomeRelativo = Utils.relativeNomeClasse(clas.getName());
+        try {
+            StringJoiner comandoTruncate = new StringJoiner(" ");
+            comandoTruncate.add("DELETE");
+            comandoTruncate.add("FROM");
+            comandoTruncate.add(nomeRelativo);
+
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:banco.sqlite");
+            Statement stm = conn.createStatement();
+            stm.execute(comandoTruncate.toString());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static class Utils {
         private static String capitalize(String _str) {
             String str = _str.substring(0, 1).toUpperCase() + _str.substring(1);
@@ -437,7 +461,7 @@ public class Persistencia {
             return object;
         }
 
-        private static <T> Class getModeloPorNome(String nome) {
+        private static Class getModeloPorNome(String nome) {
             StringJoiner sj = new StringJoiner(".");
             sj.add("recursos.MVC.modelos");
             sj.add(capitalize(nome));
@@ -452,6 +476,13 @@ public class Persistencia {
                 e.printStackTrace();
                 return null;
             }
+        }
+
+        public static <T> Class getModeloPorClasse(Class<T> tClass) {
+
+            String nomeTClass = Utils.relativeNomeClasse(tClass.getName()).toLowerCase();
+
+            return getModeloPorNome(nomeTClass);
         }
     }
 }
