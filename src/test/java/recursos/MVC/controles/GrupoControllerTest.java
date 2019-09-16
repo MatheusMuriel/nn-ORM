@@ -30,6 +30,35 @@ class GrupoControllerTest {
         this.db = new Persistencia();
         GrupoController gCtrl = new GrupoController(db);
         assert ( gCtrl.procurar("").size() == 0 );
+
+        Grupo grupo1 = new Grupo("Familia");
+        Grupo grupo2 = new Grupo("Escola");
+        Grupo grupo3 = new Grupo("Trabalho");
+        Grupo grupo4 = new Grupo("RPG");
+
+        gCtrl.novoGrupo("Familia");
+        assert ( gCtrl.procurar(grupo1.getDescricao_grupo())
+                .stream()
+                .anyMatch(gp -> gp.toString()
+                        .equals(grupo1.toString())) );
+
+        gCtrl.novoGrupo("Escola");
+        assert ( gCtrl.procurar(grupo2.getDescricao_grupo())
+                .stream()
+                .anyMatch(gp -> gp.toString()
+                        .equals(grupo2.toString())) );
+
+        gCtrl.novoGrupo("Trabalho");
+        assert ( gCtrl.procurar(grupo3.getDescricao_grupo())
+                .stream()
+                .anyMatch(gp -> gp.toString()
+                        .equals(grupo3.toString())) );
+
+        gCtrl.novoGrupo("RPG");
+        assert ( gCtrl.procurar(grupo4.getDescricao_grupo())
+                .stream()
+                .anyMatch(gp -> gp.toString()
+                        .equals(grupo4.toString())) );
     }
 
     @Test
