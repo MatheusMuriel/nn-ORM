@@ -18,7 +18,7 @@ public class Persistencia {
         conectar();
         carregarTabelas();
         carregaDados();
-        //carregaColunas();
+        carregaColunas();
         //getTabelaPorNome("contato");
 
         System.out.println();
@@ -152,7 +152,8 @@ public class Persistencia {
                     parametros.put("nome", nomeColuna);
                     parametros.put("tipoDeDado", tipoColuna);
 
-                    tb.adicionarColuna(Coluna.class.cast(Utils.createClass("muriel.ORM.Coluna", parametros)));
+                    Object classeInstanciada = Utils.createClass(Coluna.class.getName(), parametros);
+                    tb.adicionarColuna( (Coluna) classeInstanciada );
                 }
             }
         } catch (SQLException e) {

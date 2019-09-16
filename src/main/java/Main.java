@@ -18,7 +18,7 @@ public class Main{
 
         //criarTabelas(db);
 
-        Populate.populateTabelas(db);
+        //Populate.populateTabelas(db);
         System.out.println();
     }
 
