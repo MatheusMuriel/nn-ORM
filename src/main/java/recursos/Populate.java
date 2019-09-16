@@ -108,4 +108,12 @@ public class Populate {
     public static void trucateGrupos() {
         Persistencia.truncarTabelaPorClasse(Grupo.class);
     }
+
+    public static void trucateContatos() {
+        Persistencia.truncarTabelaPorClasse(Contato.class);
+    }
+
+    public static void trucateTelefones() {
+        Persistencia.truncarTabelaPorClasse(Telefone.class);
+    }
 }
