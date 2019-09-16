@@ -2,6 +2,7 @@ package recursos.MVC.modelos;
 
 import recursos.MVC.modelos.annotations.ChavePrimaria;
 
+import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.StringJoiner;
 
@@ -56,10 +57,22 @@ public class Grupo {
 
     /**
      *  Metodo que compara o grupo com uma determinada String.
-     * @param nome String a ser comparada.
-     * @return true se a descrição do grupo corresponder EXATAMENTE a string.
+     * @param descricao String a ser comparada.
+     * @return true se a descrição normalizada do grupo corresponder a string.
      */
-    public boolean comparaGrupo(String nome) {
-        return this.descricao_grupo.equals(nome);
+    public boolean comparaGrupo(String descricao) {
+        String d1 = normalizaDescricao(this.getDescricao_grupo());
+        String d2 = normalizaDescricao(descricao);
+
+        return d1.contains(d2);
+    }
+
+    public String normalizaDescricao(String s1) {
+        s1 = Normalizer
+                .normalize(s1, Normalizer.Form.NFD)
+                .replaceAll("[^\\p{ASCII}]", "")
+                .toLowerCase();
+
+        return s1;
     }
 }
