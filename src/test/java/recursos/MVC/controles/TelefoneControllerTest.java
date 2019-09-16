@@ -20,8 +20,6 @@ class TelefoneControllerTest {
         this.db = new Persistencia();
         Populate.populateTabelas();
         this.db = new Persistencia();
-
-        System.out.println();
     }
 
     @Test

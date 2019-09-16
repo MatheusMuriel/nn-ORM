@@ -4,6 +4,7 @@ package recursos.MVC.modelos;
 import recursos.MVC.modelos.annotations.ChavePrimaria;
 import recursos.MVC.modelos.annotations.Unico;
 
+import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.StringJoiner;
 
@@ -94,13 +95,23 @@ public class Contato {
      */
     public boolean comparaNome(String nome) {
 
-        String n1 = this.getPrimeiro_nome();
-        String n2 = this.getUltimo_nome();
+        String n1 = normalizaNome(this.primeiro_nome);
+        String n2 = normalizaNome(this.ultimo_nome);
+        nome = normalizaNome(nome);
 
         if (n1.contains(nome) || n2.contains(nome)) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public String normalizaNome(String s1) {
+        s1 = Normalizer
+                .normalize(s1, Normalizer.Form.NFD)
+                .replaceAll("[^\\p{ASCII}]", "")
+                .toLowerCase();
+
+        return s1;
     }
 }
