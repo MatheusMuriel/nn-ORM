@@ -1,5 +1,7 @@
 package recursos.MVC.controles;
 
+import recursos.MVC.modelos.Grupo;
+import recursos.MVC.modelos.Telefone;
 import recursos.ORM.Tabela;
 import recursos.Persistencia;
 import recursos.MVC.modelos.Contato;
@@ -21,6 +23,13 @@ public class ContatoController implements Controller<Contato> {
         this.adicionar(newContato);
     }
 
+    public void vincularTelefone(Telefone telefone) {
+
+    }
+
+    public void vincularGrupo(Grupo grupo) {
+
+    }
 
     @Override
     public void adicionar(Contato contato) {

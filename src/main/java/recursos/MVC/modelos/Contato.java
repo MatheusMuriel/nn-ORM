@@ -5,17 +5,21 @@ import recursos.MVC.modelos.annotations.ChavePrimaria;
 import recursos.MVC.modelos.annotations.Unico;
 
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringJoiner;
 
 public class Contato {
     @ChavePrimaria
     int id_contato;
+
     String primeiro_nome;
     String ultimo_nome;
 
     @Unico
     String email;
+
+    ArrayList<Telefone> telefones = new ArrayList<>();
 
     /**
      * Construtor padrão da classe.

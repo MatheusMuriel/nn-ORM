@@ -1,5 +1,6 @@
 package recursos.MVC.controles;
 
+import recursos.MVC.modelos.Contato;
 import recursos.ORM.Tabela;
 import recursos.Persistencia;
 import recursos.MVC.modelos.Grupo;
@@ -18,6 +19,10 @@ public class GrupoController implements Controller<Grupo> {
     public void novoGrupo(String descricao) {
         Grupo newGrupo = new Grupo(descricao);
         this.adicionar(newGrupo);
+    }
+
+    public void vincularContato(Contato contato) {
+
     }
 
     @Override
