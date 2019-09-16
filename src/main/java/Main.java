@@ -1,3 +1,6 @@
+import recursos.MVC.controles.ContatoController;
+import recursos.MVC.controles.GrupoController;
+import recursos.MVC.controles.TelefoneController;
 import recursos.MVC.modelos.Contato;
 import recursos.MVC.modelos.Grupo;
 import recursos.MVC.modelos.Telefone;
@@ -19,6 +22,11 @@ public class Main{
         //criarTabelas(db);
 
         //Populate.populateTabelas(db);
+
+        ContatoController cCtrl  = new ContatoController(db);
+        TelefoneController tCtrl = new TelefoneController(db);
+        GrupoController gCtrl    = new GrupoController(db);
+
         System.out.println();
     }
 
@@ -95,7 +103,7 @@ public class Main{
          * @param db Instancia de persistencia.
          */
         public static void populateContatos(Persistencia db) {
-            recursos.MVC.controles.Contato contControl = new recursos.MVC.controles.Contato();
+            ContatoController contControl = new ContatoController(db);
             contControl.novoContato(db, "Jose", "Silva", "jose.silva@gmail.com");
             contControl.novoContato(db, "Maria", "Antonia", "maria_antonia@gmail.com");
             contControl.novoContato(db, "Roberto", "Souza", "robert-souza@gmail.com");
@@ -106,12 +114,14 @@ public class Main{
          * @param db Instancia de persistencia.
          */
         public static void populateTelefones (Persistencia db) {
-            recursos.MVC.controles.Telefone telefControl = new recursos.MVC.controles.Telefone();
-            telefControl.novoTelefone(db, "99999-9999");
-            telefControl.novoTelefone(db, "88888-8888");
-            telefControl.novoTelefone(db, "77777-7777");
-            telefControl.novoTelefone(db, "66666-6666");
-            telefControl.novoTelefone(db, "55555-5555");
+            TelefoneController telefControl = new TelefoneController(db);
+
+            telefControl.novoTelefone("99999-9999");
+            telefControl.novoTelefone("99999-9999");
+            telefControl.novoTelefone("88888-8888");
+            telefControl.novoTelefone("77777-7777");
+            telefControl.novoTelefone("66666-6666");
+            telefControl.novoTelefone("55555-5555");
         }
 
         /**
@@ -119,12 +129,12 @@ public class Main{
          * @param db Instancia de persistencia.
          */
         public static void populateGrupos (Persistencia db) {
-            recursos.MVC.controles.Grupo grupControl = new recursos.MVC.controles.Grupo();
-            grupControl.novoGrupo(db, "Familia");
-            grupControl.novoGrupo(db, "Escola");
-            grupControl.novoGrupo(db, "Trabalho");
-            grupControl.novoGrupo(db, "RPG");
-            grupControl.novoGrupo(db, "Teatro");
+            GrupoController grupControl = new GrupoController(db);
+            grupControl.novoGrupo("Familia");
+            grupControl.novoGrupo("Escola");
+            grupControl.novoGrupo("Trabalho");
+            grupControl.novoGrupo("RPG");
+            grupControl.novoGrupo("Teatro");
         }
 
     }

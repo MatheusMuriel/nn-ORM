@@ -19,9 +19,6 @@ public class Persistencia {
         carregarTabelas();
         carregaDados();
         carregaColunas();
-        //getTabelaPorNome("contato");
-
-        System.out.println();
     }
 
     public void conectar(){
@@ -67,16 +64,21 @@ public class Persistencia {
     }
 
     public ArrayList<Tabela> getTabelaPorNome(String nome) {
-        ArrayList<Tabela> tabelas = getAllTabelas();
 
-        tabelas.removeIf( tb -> !(tb.getNome().equals(nome)));
+        // Pega todas as tabelas
+        ArrayList<Tabela> tabelasFiltradas = getAllTabelas();
 
-        return tabelas;
+        //Remove as que NÃO tem o nome igual.
+        tabelasFiltradas.removeIf( tb -> !(tb.getNome().equals(nome)));
+
+        return tabelasFiltradas;
     }
 
     public <T> ArrayList<Tabela> getTabelaPorClasse(Class<T> tClass) {
 
-        String nomeTClass = Utils.relativeNomeClasse(tClass.getName());
+        // Relativiza o nome pq as tabelas só tem o nome relativo.
+        // Transforma em LowerCase pq esse é o padrão de nome de tabela.
+        String nomeTClass = Utils.relativeNomeClasse(tClass.getName()).toLowerCase();
 
         return getTabelaPorNome(nomeTClass);
     }

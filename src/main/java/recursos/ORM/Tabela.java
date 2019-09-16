@@ -106,4 +106,8 @@ public class Tabela {
     public void adicionarObjeto(Object objeto) {
         this.linhas.add(objeto);
     }
+
+    public ArrayList<Object> getLinhas() {
+        return linhas;
+    }
 }

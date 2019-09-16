@@ -1,5 +1,7 @@
 package recursos.MVC.modelos;
 
+import recursos.MVC.modelos.annotations.ChavePrimaria;
+
 import java.util.HashMap;
 import java.util.StringJoiner;
 
@@ -50,5 +52,14 @@ public class Grupo {
         StringJoiner sj = new StringJoiner(" ");
         sj.add(this.descricao_grupo);
         return sj.toString();
+    }
+
+    /**
+     *  Metodo que compara o grupo com uma determinada String.
+     * @param nome String a ser comparada.
+     * @return true se a descrição do grupo corresponder EXATAMENTE a string.
+     */
+    public boolean comparaGrupo(String nome) {
+        return this.descricao_grupo.equals(nome);
     }
 }

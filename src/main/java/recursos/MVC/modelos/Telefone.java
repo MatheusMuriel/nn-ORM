@@ -1,5 +1,8 @@
 package recursos.MVC.modelos;
 
+import recursos.MVC.modelos.annotations.ChavePrimaria;
+import recursos.MVC.modelos.annotations.Obrigatorio;
+
 import java.util.HashMap;
 import java.util.StringJoiner;
 
@@ -51,5 +54,22 @@ public class Telefone {
         StringJoiner sj = new StringJoiner(" ");
         sj.add(this.telefone);
         return sj.toString();
+    }
+
+    /**
+     *  Metodo que compara o telefone com uma determinada String.
+     *  Desconsidera caracteres especiais
+     * @param telefone String a ser comparada.
+     * @return true se a string corresponder a um pedaço do telefone.
+     */
+    public boolean comparaTelefone(String telefone) {
+        String t1 = normalize(this.telefone);
+        String t2 = normalize(telefone);
+
+        return t1.contains(t2);
+    }
+
+    public String normalize(String s) {
+        return s.replaceAll("(\\s|\\(|\\)|\\-|\\+)", "");
     }
 }

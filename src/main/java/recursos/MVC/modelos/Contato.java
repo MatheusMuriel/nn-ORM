@@ -1,6 +1,9 @@
 package recursos.MVC.modelos;
 
 
+import recursos.MVC.modelos.annotations.ChavePrimaria;
+import recursos.MVC.modelos.annotations.Unico;
+
 import java.util.HashMap;
 import java.util.StringJoiner;
 
@@ -79,5 +82,25 @@ public class Contato {
         sj.add(" :: ");
         sj.add(this.email);
         return sj.toString();
+    }
+
+    /**
+     *  Metodo que compara se a intancia do contato coresponde a um determinado nome.
+     *
+     *  Verifica o nome e o sobrenome.
+     *
+     * @param nome Nome a ser comparado.
+     * @return true se corresponde ou false se não corresponde.
+     */
+    public boolean comparaNome(String nome) {
+
+        String n1 = this.getPrimeiro_nome();
+        String n2 = this.getUltimo_nome();
+
+        if (n1.contains(nome) || n2.contains(nome)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

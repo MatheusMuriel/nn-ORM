@@ -1,10 +1,9 @@
-package recursos.MVC.modelos;
+package recursos.MVC.modelos.annotations;
 
 import java.lang.annotation.Retention;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
-public @interface ChavePrimaria {
-
+public @interface Obrigatorio {
 }
