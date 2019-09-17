@@ -2,60 +2,147 @@
 
 title Agenda DB - Diagrama de Classe
 
-namespace MVC {
+'------------ MVC ------------
 
-'------------ Modelos ------------
-namespace Modelos {
+    '------------ Modelos ------------
+        class recursos.MVC.modelos.Contato {
+            ~ email : String
+            ~ id_contato : int
+            ~ primeiro_nome : String
+            ~ telefones : ArrayList<Telefone>
+            ~ ultimo_nome : String
+            + Contato()
+            + Contato()
+            + Contato()
+            + comparaNome()
+            + getEmail()
+            + getId_contato()
+            + getPrimeiro_nome()
+            + getUltimo_nome()
+            + normalizaNome()
+            + setEmail()
+            + setId_contato()
+            + setPrimeiro_nome()
+            + setUltimo_nome()
+            + toString()
+        }
+        class recursos.MVC.modelos.Grupo {
+            ~ descricao_grupo : String
+            ~ id_grupo : int
+            + Grupo()
+            + Grupo()
+            + Grupo()
+            + comparaGrupo()
+            + getDescricao_grupo()
+            + getId_grupo()
+            + normalizaDescricao()
+            + setDescricao_grupo()
+            + setId_grupo()
+            + toString()
+        }
+        class recursos.MVC.modelos.Telefone {
+            ~ id_telefone : int
+            ~ telefone : String
+            + Telefone()
+            + Telefone()
+            + Telefone()
+            + comparaTelefone()
+            + getId_telefone()
+            + getTelefone()
+            + normalize()
+            + setId_telefone()
+            + setTelefone()
+            + toString()
+        }
 
-    class recursos.MVC.modelos.Contato {
-    }
-    class recursos.MVC.modelos.Grupo {
-    }
-    class recursos.MVC.modelos.Telefone {
-    }
+        '------------ Annotations ------------
+        interface recursos.MVC.modelos.annotations.ChavePrimaria {
+        }
+        interface recursos.MVC.modelos.annotations.Obrigatorio {
+        }
+        interface recursos.MVC.modelos.annotations.Unico {
+        }
 
-}
+    '------------ Views ------------
 
-'------------ Views ------------
-class recursos.MVC.views.Contato {
-}
-class recursos.MVC.views.Grupo {
-}
-class recursos.MVC.views.Telefone {
-}
-
-'------------ Controles ------------
-class recursos.MVC.controles.ContatoController {
-}
-interface recursos.MVC.controles.Controller {
-}
-class recursos.MVC.controles.GrupoController {
-}
-class recursos.MVC.controles.TelefoneController {
-}
-
-}
+        class recursos.MVC.views.Contato {
+        }
+        class recursos.MVC.views.Grupo {
+        }
+        class recursos.MVC.views.Telefone {
+        }
 
 
+    '------------ Controles ------------
+        class recursos.MVC.controles.ContatoController {
+            + ContatoController()
+            + adicionar()
+            + atualiza()
+            + novoContato()
+            + procurar()
+            + remover()
+            + vincularGrupo()
+            + vincularTelefone()
+        }
+        class recursos.MVC.controles.GrupoController {
+            + GrupoController()
+            + adicionar()
+            + atualiza()
+            + novoGrupo()
+            + procurar()
+            + remover()
+            + vincularContato()
+        }
+        class recursos.MVC.controles.TelefoneController {
+            + TelefoneController()
+            + adicionar()
+            + atualiza()
+            + novoTelefone()
+            + procurar()
+            + remover()
+            + vincularContato()
+        }
 
-'------------ Annotations ------------
-interface recursos.MVC.modelos.annotations.ChavePrimaria {
-}
-interface recursos.MVC.modelos.annotations.Obrigatorio {
-}
-interface recursos.MVC.modelos.annotations.Unico {
-}
-
+        '------------ Interface ------------
+        interface recursos.MVC.controles.Controller {
+            {abstract} + adicionar()
+            {abstract} + atualiza()
+            {abstract} + procurar()
+            {abstract} + remover()
+        }
 
 '------------ ORM ------------
-class recursos.ORM.Coluna {
-}
-class recursos.ORM.Tabela {
-}
-class recursos.Persistencia {
-}
-class recursos.Populate {
-}
+    class recursos.Persistencia {
+    }
+    class recursos.Populate {
+    }
+    class recursos.ORM.Coluna {
+        ~ constraint : String
+        ~ nome : String
+        ~ tipoDeDado : String
+        + Coluna()
+        + Coluna()
+        + toString()
+    }
+    class recursos.ORM.Tabela {
+        ~ colunas : ArrayList<Coluna>
+        ~ constr : ArrayList<String>
+        ~ linhas : ArrayList<Object>
+        ~ nome : String
+        ~ schema : String
+        + Tabela()
+        + Tabela()
+        + adicionarColuna()
+        + adicionarObjeto()
+        + getColunas()
+        + getConstr()
+        + getLinhas()
+        + getNome()
+        + getSchema()
+        + instanceArray()
+        + toSQLCreate()
+        + toString()
+    }
 
 
 
@@ -65,5 +152,15 @@ recursos.MVC.controles.GrupoController .up.|> recursos.MVC.controles.Controller
 recursos.MVC.controles.GrupoController o-- recursos.Persistencia : db
 recursos.MVC.controles.TelefoneController .up.|> recursos.MVC.controles.Controller
 recursos.MVC.controles.TelefoneController o-- recursos.Persistencia : db
+
+recursos.MVC.modelos.Contato .up.|> recursos.MVC.modelos.annotations.ChavePrimaria
+recursos.MVC.modelos.Contato .up.|> recursos.MVC.modelos.annotations.Unico
+
+recursos.MVC.modelos.Grupo .up.|> recursos.MVC.modelos.annotations.ChavePrimaria
+
+recursos.MVC.modelos.Telefone .up.|> recursos.MVC.modelos.annotations.ChavePrimaria
+recursos.MVC.modelos.Telefone .up.|> recursos.MVC.modelos.annotations.Obrigatorio
+
+recursos.Persistencia +-down- recursos.Persistencia.Utils
 
 @enduml
