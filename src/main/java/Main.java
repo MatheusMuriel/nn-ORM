@@ -6,7 +6,7 @@ public class Main{
     public static void main(String... args){
         System.out.println("Hello World!");
 
-        Populate.populateTabelas();
+        //Populate.populateTabelas();
 
         Persistencia db = new Persistencia();
 

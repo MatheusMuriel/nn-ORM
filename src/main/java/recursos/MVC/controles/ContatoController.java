@@ -18,6 +18,10 @@ public class ContatoController implements Controller<Contato> {
         this.db = db;
     }
 
+    public ContatoController() {
+
+    }
+
     public void novoContato(String nome, String sobreNome, String email) {
         Contato newContato = new Contato(nome, sobreNome, email);
         this.adicionar(newContato);
@@ -70,5 +74,13 @@ public class ContatoController implements Controller<Contato> {
         }
 
         return resultado;
+    }
+
+    public Contato procurarPorId(String id) {
+        ArrayList<Contato> todos = this.procurar("");
+
+        return todos.stream()
+                .filter(c ->  String.valueOf(c.getId_contato()).equals(id) )
+                .collect(Collectors.toList()).get(0);
     }
 }

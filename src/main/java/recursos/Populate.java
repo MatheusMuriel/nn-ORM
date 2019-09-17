@@ -59,9 +59,9 @@ public class Populate {
      */
     public static void populateTabelas() {
         Persistencia db = new Persistencia();
-        //populateContatos(db);
-        //populateGrupos(db);
-        //populateTelefones(db);
+        populateContatos(db);
+        populateGrupos(db);
+        populateTelefones(db);
         populateContatoTelefone(db);
     }
 

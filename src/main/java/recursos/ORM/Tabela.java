@@ -1,7 +1,9 @@
 package recursos.ORM;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
@@ -111,6 +113,48 @@ public class Tabela {
         Tabela t1 = this;
 
         return t1.getNome().equals(t2.getNome());
+    }
+
+    public boolean comparaNome(String t2) {
+        Tabela t1 = this;
+
+        return t1.getNome().equals(t2);
+    }
+
+    public Object filtraLinhasPorId(String id) {
+        ArrayList<Object> todasLinhas = this.getLinhas();
+
+        Object oSaida = null;
+
+        for (Object o : todasLinhas) {
+
+            if (oSaida != null){
+                break;
+            }
+
+            Class<?> clazz = o.getClass();
+
+            for(Field field : clazz.getDeclaredFields()) {
+                String nomeAtt = field.getName();
+                if (nomeAtt.contains("id_")) {
+                    try {
+                        field.setAccessible(true);
+                        String valorId = String.valueOf( field.get(o) );
+
+                        if (valorId.equals(id)){
+                            oSaida = o;
+                            break;
+                        }
+
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }
+
+        return oSaida;
     }
 
 }

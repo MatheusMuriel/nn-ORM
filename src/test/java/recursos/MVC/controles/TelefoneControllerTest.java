@@ -30,6 +30,8 @@ class TelefoneControllerTest {
         this.db = new Persistencia();
         TelefoneController tCtrl = new TelefoneController(db);
         assert ( tCtrl.procurar("").size() == 0 );
+
+        // TODO Fazer teste
     }
 
     @Test
@@ -40,14 +42,18 @@ class TelefoneControllerTest {
         this.db = new Persistencia();
         TelefoneController tCtrl = new TelefoneController(db);
         assert ( tCtrl.procurar("").size() == 0 );
+
+        // TODO Fazer teste
     }
 
     @Test
     void remover() {
+        // TODO Fazer teste
     }
 
     @Test
     void atualiza() {
+        // TODO Fazer teste
     }
 
     @Test

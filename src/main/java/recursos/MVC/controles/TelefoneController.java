@@ -16,6 +16,10 @@ public class TelefoneController implements Controller<Telefone> {
         this.db = db;
     }
 
+    public TelefoneController() {
+
+    }
+
     public void novoTelefone(String telefone) {
         Telefone newTelefone = new Telefone(telefone);
         this.adicionar(newTelefone);
@@ -64,5 +68,13 @@ public class TelefoneController implements Controller<Telefone> {
         }
 
         return resultado;
+    }
+
+    public Telefone procurarPorId(String id) {
+        ArrayList<Telefone> todos = this.procurar("");
+
+        return todos.stream()
+                .filter(c ->  String.valueOf(c.getId_telefone()).equals(id) )
+                .collect(Collectors.toList()).get(0);
     }
 }

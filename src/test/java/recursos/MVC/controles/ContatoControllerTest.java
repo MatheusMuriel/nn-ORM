@@ -23,7 +23,6 @@ class ContatoControllerTest {
         this.db = new Persistencia();
     }
 
-
     @Test
     void novoContato() {
         Populate.trucateContatos();
@@ -32,6 +31,23 @@ class ContatoControllerTest {
         this.db = new Persistencia();
         ContatoController cCtrl = new ContatoController(db);
         assert ( cCtrl.procurar("").size() == 0 );
+
+        Contato c1 = new Contato("Fernando", "Pessoa", "jose.silva@gmail.com");
+        Contato c2 = new Contato("Silvio", "Antonelo", "maria_antonia@gmail.com");
+        Contato c3 = new Contato("Alfajor", "Chocq", "robert-souza@gmail.com");
+
+        cCtrl.novoContato("Fernando", "Pessoa", "jose.silva@gmail.com");
+        ArrayList<Contato> rConslt1 = cCtrl.procurar("Fernando Pessoa");
+        assert ( rConslt1.stream().anyMatch(ct -> ct.toString().equals(c1.toString())) );
+
+        cCtrl.novoContato("Silvio", "Antonelo", "maria_antonia@gmail.com");
+        ArrayList<Contato> rConslt2 = cCtrl.procurar("Silvio Antonelo");
+        assert ( rConslt2.stream().anyMatch(ct -> ct.toString().equals(c2.toString())) );
+
+        cCtrl.novoContato("Alfajor", "Chocq", "robert-souza@gmail.com");
+        ArrayList<Contato> rConslt3 = cCtrl.procurar("Alfajor Chocq");
+        assert ( rConslt3.stream().anyMatch(ct -> ct.toString().equals(c3.toString())) );
+
     }
 
     @Test
@@ -42,14 +58,32 @@ class ContatoControllerTest {
         this.db = new Persistencia();
         ContatoController cCtrl = new ContatoController(db);
         assert ( cCtrl.procurar("").size() == 0 );
+
+        Contato c1 = new Contato("Fernando", "Pessoa", "jose.silva@gmail.com");
+        Contato c2 = new Contato("Silvio", "Antonelo", "maria_antonia@gmail.com");
+        Contato c3 = new Contato("Alfajor", "Chocq", "robert-souza@gmail.com");
+
+        cCtrl.adicionar(c1);
+        ArrayList<Contato> rConslt1 = cCtrl.procurar("Fernando Pessoa");
+        assert ( rConslt1.stream().anyMatch(ct -> ct.toString().equals(c1.toString())) );
+
+        cCtrl.adicionar(c2);
+        ArrayList<Contato> rConslt2 = cCtrl.procurar("Silvio Antonelo");
+        assert ( rConslt2.stream().anyMatch(ct -> ct.toString().equals(c2.toString())) );
+
+        cCtrl.adicionar(c3);
+        ArrayList<Contato> rConslt3 = cCtrl.procurar("Alfajor Chocq");
+        assert ( rConslt3.stream().anyMatch(ct -> ct.toString().equals(c3.toString())) );
     }
 
     @Test
     void remover() {
+        // TODO Fazer teste
     }
 
     @Test
     void atualiza() {
+        // TODO Fazer teste
     }
 
     @Test
@@ -92,5 +126,42 @@ class ContatoControllerTest {
 
         ArrayList<Contato> rRoberto4 = cCtrl.procurar(consultaRoberto4);
         assert ( rRoberto4.stream().anyMatch(ct -> ct.toString().equals(c2.toString())) );
+    }
+
+    @Test
+    void vincularTelefone() {
+        Populate.trucateContatos();
+        this.db = new Persistencia();
+        Populate.populateContatos(db);
+
+        this.db = new Persistencia();
+
+
+        ContatoController cCtrl = new ContatoController(db);
+        TelefoneController tCtrl = new TelefoneController(db);
+
+        Contato c1 = cCtrl.procurar("Jose").get(0);
+        Contato c2 = cCtrl.procurar("Maria").get(0);
+
+        Telefone t1 = tCtrl.procurar("9999").get(0);
+        Telefone t2 = tCtrl.procurar("55555").get(0);
+
+        cCtrl.vincularTelefone(c1, t1);
+        cCtrl.vincularTelefone(c2, t2);
+
+        ArrayList<Contato> rConslt1 = cCtrl.procurar("Jose");
+        assert ( rConslt1.stream()
+                    .anyMatch(ct -> ct.getTelefones().stream()
+                                        .anyMatch(t -> t.toString().equals(t1.toString())) ) );
+
+        ArrayList<Contato> rConslt2 = cCtrl.procurar("Maria");
+        assert ( rConslt2.stream()
+                .anyMatch(ct -> ct.getTelefones().stream()
+                        .anyMatch(t -> t.toString().equals(t2.toString())) ) );
+    }
+
+    @Test
+    void vincularGrupo() {
+        // TODO Fazer teste
     }
 }

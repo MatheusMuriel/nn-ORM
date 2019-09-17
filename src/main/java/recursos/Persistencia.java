@@ -1,5 +1,6 @@
 package recursos;
 
+import recursos.MVC.controles.Controller;
 import recursos.MVC.modelos.Grupo;
 import recursos.ORM.Coluna;
 import recursos.ORM.Tabela;
@@ -22,8 +23,9 @@ public class Persistencia {
         conectar();
         carregarTabelas();
         carregaColunas();
-        carregaDados();
         carregarRelacionamentos();
+        carregaDados();
+        carregaDadosRelacionamento();
     }
 
     public Persistencia(boolean populate){
@@ -162,6 +164,35 @@ public class Persistencia {
         return rst;
     }
 
+    private Tabela getTabelaRealacionamento(Tabela t1, Tabela t2) {
+        ResultSet rst = getTabelasRelacionamento();
+        List<Tabela> tabs = new ArrayList<>();
+        try {
+            while (rst.next()) {
+                String nomeTabela = rst.getString("name");
+
+                HashMap<String, String> parametros = new HashMap<>();
+                parametros.put("nome", nomeTabela);
+
+                Class classeORMTabela = Tabela.class;
+                Object objClass = Utils.createClass(classeORMTabela.getName(), parametros);
+
+                tabs.add((Tabela) objClass);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        String nomeRelation1 =  t1 + "_" + t2;
+        String nomeRelation2 =  t2 + "_" + t1;
+
+        tabs = tabs.stream()
+                .filter(t -> t.comparaNome(nomeRelation1) || t.comparaNome(nomeRelation2))
+                .collect(Collectors.toList());
+
+        return tabs.get(0);
+    }
+
     /**
      * Metodo responsavel por carregar todos as colunas das tabelas e os transformar em objetos.
      */
@@ -217,6 +248,87 @@ public class Persistencia {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void carregaDadosRelacionamento() {
+        for (Tabela tb : this.tabelas) {
+            // Carrega relacionamentos
+            this.relacionamentos.computeIfPresent(tb, (tbl, arL) -> {
+                for (Tabela tbRl : arL) {
+                    Tabela tbObj = getTabelaRealacionamento(tbl, tbRl);
+
+                    String selectRelacionamentos = "SELECT * FROM " + tbObj + ";";
+                    try {
+                        ResultSet rstTabRel = executarSelect(selectRelacionamentos);
+                        ResultSetMetaData rstTabRelmd = rstTabRel.getMetaData();
+
+                        String nomeT1 = rstTabRelmd.getColumnName(1);
+                        String nomeT2 = rstTabRelmd.getColumnName(2);
+
+                        String finalNomeT = nomeT1;
+                        Tabela t1 = this.getAllTabelas().stream()
+                                .filter(t -> t.getNome().equals(finalNomeT.replaceAll("_fk", "")))
+                                .collect(Collectors.toList()).get(0);
+
+                        String finalNomeT1 = nomeT2;
+                        Tabela t2 = this.getAllTabelas().stream()
+                                .filter(t -> t.getNome().equals(finalNomeT1.replaceAll("_fk", "")))
+                                .collect(Collectors.toList()).get(0);
+
+                        System.out.println();
+
+                        while (rstTabRel.next()) {
+                            String valorT1 = rstTabRel.getString(nomeT1);
+                            String valorT2 = rstTabRel.getString(nomeT2);
+
+                            nomeT1 = nomeT1.replaceAll("_fk","");
+                            nomeT2 = nomeT2.replaceAll("_fk","");
+
+                            Object o1 = t1.filtraLinhasPorId(valorT1);
+                            Object o2 = t2.filtraLinhasPorId(valorT2);
+
+
+                            Class<?> clazz1 = o1.getClass();
+                            Class<?> clazz2 = o2.getClass();
+
+                            try {
+                                for(Field field : clazz1.getDeclaredFields()) {
+                                    String nomeAtt = field.getName();
+                                    if (nomeAtt.contains(nomeT2)) {
+                                        field.setAccessible(true);
+                                        Object oAtt1 = field.get(o1);
+                                        ArrayList l1 = (ArrayList)oAtt1;
+                                        l1.add(o2);
+                                        this.tabelas.set(this.tabelas.indexOf(tb), tb);
+                                    }
+                                }
+
+                                for(Field field : clazz2.getDeclaredFields()) {
+                                    String nomeAtt = field.getName();
+                                    if (nomeAtt.contains(nomeT1)) {
+                                        field.setAccessible(true);
+                                        Object oAtt2 = field.get(o2);
+                                        ArrayList l2 = (ArrayList)oAtt2;
+                                        l2.add(o1);
+                                        this.tabelas.set(this.tabelas.indexOf(tb), tb);
+                                    }
+                                }
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println();
+                        }
+                        System.out.println();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                    System.out.println();
+                }
+                return arL;
+            });
+        }
+        System.out.println();
     }
 
     /**
@@ -610,6 +722,23 @@ public class Persistencia {
             String nomeTClass = Utils.relativeNomeClasse(tClass.getName()).toLowerCase();
 
             return getModeloPorNome(nomeTClass);
+        }
+
+        private static Class getControllerPorNomeDoModelo(String nome) {
+            StringJoiner sj = new StringJoiner(".");
+            sj.add("recursos.MVC.controles");
+            sj.add(capitalize(nome) + "Controller");
+
+            Class<?> clazz = null;
+            try {
+                clazz = Class.forName(sj.toString());
+                Constructor<?> ctor = clazz.getConstructor();
+                Object object = ctor.newInstance();
+                return object.getClass();
+            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
     }
 }

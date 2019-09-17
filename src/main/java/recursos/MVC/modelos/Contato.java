@@ -1,6 +1,7 @@
 package recursos.MVC.modelos;
 
 
+import recursos.MVC.controles.ContatoController;
 import recursos.MVC.modelos.annotations.ChavePrimaria;
 import recursos.MVC.modelos.annotations.Unico;
 
@@ -21,6 +22,8 @@ public class Contato {
 
     ArrayList<Telefone> telefones = new ArrayList<>();
 
+    ContatoController controlador;
+
     /**
      * Construtor padrão da classe.
      * @param primeiro_nome Primeiro nome do Contato.
@@ -31,6 +34,7 @@ public class Contato {
         this.primeiro_nome = primeiro_nome;
         this.ultimo_nome = ultimo_nome;
         this.email = email;
+        this.controlador = new ContatoController();
     }
 
     /**
@@ -103,7 +107,8 @@ public class Contato {
         String n2 = normalizaNome(this.ultimo_nome);
         nome = normalizaNome(nome);
 
-        if (n1.contains(nome) || n2.contains(nome)) {
+        // Se o nome do contato contem a string, ou se a string contem o nome de contato.
+        if ( ( n1.contains(nome) || n2.contains(nome) ) || ( nome.contains(n1) || nome.contains(n2) ) )  {
             return true;
         } else {
             return false;
@@ -117,5 +122,17 @@ public class Contato {
                 .toLowerCase();
 
         return s1;
+    }
+
+    public ArrayList<Telefone> getTelefones() {
+        return telefones;
+    }
+
+    public ContatoController getControlador(){
+        return this.controlador;
+    }
+
+    public void addReferenciaTelefone(Object ob) {
+        this.telefones.add( (Telefone) ob );
     }
 }

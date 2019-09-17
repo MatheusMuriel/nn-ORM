@@ -16,6 +16,9 @@ public class GrupoController implements Controller<Grupo> {
         this.db = db;
     }
 
+    public GrupoController() {
+    }
+
     public void novoGrupo(String descricao) {
         Grupo newGrupo = new Grupo(descricao);
         this.adicionar(newGrupo);
@@ -64,6 +67,14 @@ public class GrupoController implements Controller<Grupo> {
         }
 
         return resultado;
+    }
+
+    public Grupo procurarPorId(String id) {
+        ArrayList<Grupo> todos = this.procurar("");
+
+        return todos.stream()
+                .filter(c ->  String.valueOf(c.getId_grupo()).equals(id) )
+                .collect(Collectors.toList()).get(0);
     }
 
 }
