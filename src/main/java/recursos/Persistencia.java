@@ -274,9 +274,7 @@ public class Persistencia {
                         Tabela t2 = this.getAllTabelas().stream()
                                 .filter(t -> t.getNome().equals(finalNomeT1.replaceAll("_fk", "")))
                                 .collect(Collectors.toList()).get(0);
-
                         System.out.println();
-
                         while (rstTabRel.next()) {
                             String valorT1 = rstTabRel.getString(nomeT1);
                             String valorT2 = rstTabRel.getString(nomeT2);
@@ -318,17 +316,13 @@ public class Persistencia {
                             }
                             System.out.println();
                         }
-                        System.out.println();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-
-                    System.out.println();
                 }
                 return arL;
             });
         }
-        System.out.println();
     }
 
     /**

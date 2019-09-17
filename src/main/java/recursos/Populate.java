@@ -58,10 +58,13 @@ public class Populate {
      * Poputa as tabelas com alguns dados.
      */
     public static void populateTabelas() {
-        Persistencia db = new Persistencia();
+        Persistencia db = new Persistencia(true);
         populateContatos(db);
+        db = new Persistencia(true);
         populateGrupos(db);
+        db = new Persistencia(true);
         populateTelefones(db);
+        db = new Persistencia(true);
         populateContatoTelefone(db);
     }
 
@@ -104,6 +107,7 @@ public class Populate {
     }
 
     public static void populateContatoTelefone(Persistencia db) {
+        db = new Persistencia();
         ContatoController cCtrl = new ContatoController(db);
         TelefoneController tCtrl = new TelefoneController(db);
 
