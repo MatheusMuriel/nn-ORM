@@ -59,9 +59,10 @@ public class Populate {
      */
     public static void populateTabelas() {
         Persistencia db = new Persistencia();
-        populateContatos(db);
-        populateGrupos(db);
-        populateTelefones(db);
+        //populateContatos(db);
+        //populateGrupos(db);
+        //populateTelefones(db);
+        populateContatoTelefone(db);
     }
 
     /**
@@ -100,6 +101,20 @@ public class Populate {
         grupControl.novoGrupo("Trabalho");
         grupControl.novoGrupo("RPG");
         grupControl.novoGrupo("Teatro");
+    }
+
+    public static void populateContatoTelefone(Persistencia db) {
+        ContatoController cCtrl = new ContatoController(db);
+        TelefoneController tCtrl = new TelefoneController(db);
+
+        Contato c1 = cCtrl.procurar("Jose").get(0);
+        Contato c2 = cCtrl.procurar("Maria").get(0);
+
+        Telefone t1 = tCtrl.procurar("9999").get(0);
+        Telefone t2 = tCtrl.procurar("55555").get(0);
+
+        cCtrl.vincularTelefone(c1, t1);
+        cCtrl.vincularTelefone(c2, t2);
     }
 
     /**

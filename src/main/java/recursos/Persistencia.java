@@ -24,7 +24,6 @@ public class Persistencia {
         carregaColunas();
         carregaDados();
         carregarRelacionamentos();
-        System.out.println();
     }
 
     public Persistencia(boolean populate){
@@ -246,8 +245,8 @@ public class Persistencia {
                         .filter(tabela -> tabela.getNome().equals(nomeT2))
                         .collect(Collectors.toList()).get(0);
 
-                this.relacionamentos.computeIfAbsent( t1, k -> new ArrayList<Tabela>() ).add(t2);
-                this.relacionamentos.computeIfAbsent( t2, k -> new ArrayList<Tabela>() ).add(t1);
+                this.relacionamentos.computeIfAbsent( t1, k -> new ArrayList<>() ).add(t2);
+                this.relacionamentos.computeIfAbsent( t2, k -> new ArrayList<>() ).add(t1);
 
                 this.relacionamentos.computeIfPresent( t1, (tb, arL ) -> {
                     if (arL.stream().noneMatch(tabela -> tabela.comparaNome(t2))) {
@@ -427,8 +426,60 @@ public class Persistencia {
         String nomeT1 = Utils.relativeNomeClasse(obj1.getClass().getName()).toLowerCase();
         String nomeT2 = Utils.relativeNomeClasse(obj2.getClass().getName()).toLowerCase();
 
-        // TODO rever ordem dos nomes.
-        String nomeRelation =  nomeT1 + "_" + nomeT2;
+        String nomeRelation1 =  nomeT1 + "_" + nomeT2;
+        String nomeRelation2 =  nomeT2 + "_" + nomeT1;
+
+        ResultSet rst = getTabelasRelacionamento();
+
+        ArrayList<String> colunas = new ArrayList<>();
+        colunas.add(nomeT1 + "_fk");
+        colunas.add(nomeT2 + "_fk");
+
+        ArrayList<String> valores = new ArrayList<>();
+
+        List<Field> atributos1 = getAtributos(obj1);
+        List<Field> atributos2 = getAtributos(obj2);
+
+        atributos1.forEach(fi -> fi.setAccessible(true));
+        atributos2.forEach(fi -> fi.setAccessible(true));
+
+        Field f1 = atributos1.stream()
+                .filter(field -> field.getName().contains("id_"))
+                .collect(Collectors.toList())
+                .get(0);
+
+        Field f2 = atributos2.stream()
+                .filter(field -> field.getName().contains("id_"))
+                .collect(Collectors.toList())
+                .get(0);
+
+        f1.setAccessible(true);
+        f2.setAccessible(true);
+
+        String id1 = "";
+        String id2 = "";
+
+        try {
+            id1 = String.valueOf(f1.get(obj1));
+            id2 = String.valueOf(f2.get(obj2));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        valores.add(id1);
+        valores.add(id2);
+
+        try {
+            while (rst.next()){
+                String nomeTabela = rst.getString("name");
+
+                if (nomeTabela.equals(nomeRelation1) || nomeTabela.equals(nomeRelation2)) {
+                    genericInsert(nomeTabela, colunas, valores);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         //ArrayList<String>
 

@@ -23,8 +23,8 @@ public class ContatoController implements Controller<Contato> {
         this.adicionar(newContato);
     }
 
-    public void vincularTelefone(Telefone telefone) {
-
+    public void vincularTelefone(Contato contato, Telefone telefone) {
+        this.db.salvarRelacao(contato, telefone);
     }
 
     public void vincularGrupo(Grupo grupo) {
