@@ -106,4 +106,10 @@ public class Tabela {
     public ArrayList<Object> getLinhas() {
         return linhas;
     }
+
+    public boolean comparaNome(Tabela t2) {
+        Tabela t1 = this;
+
+        return t1.getNome().equals(t2.getNome());
+    }
 }

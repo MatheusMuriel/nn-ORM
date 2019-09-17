@@ -10,16 +10,21 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class Persistencia {
     Connection conn;
     ArrayList<Tabela> tabelas = new ArrayList<>();
+    HashMap<Tabela, ArrayList<Tabela>> relacionamentos = new HashMap<>();
 
     public Persistencia(){
         conectar();
         carregarTabelas();
-        carregaDados();
         carregaColunas();
+        carregaDados();
+        carregarRelacionamentos();
+        System.out.println();
     }
 
     public Persistencia(boolean populate){
@@ -65,6 +70,10 @@ public class Persistencia {
         }
     }
 
+    /**
+     * Metodo que faz uma copia da lista de tabelas.
+     * @return Copia da this.tabelas
+     */
     public ArrayList<Tabela> getAllTabelas() {
         ArrayList<Tabela> tbOriginal = this.tabelas;
 
@@ -100,7 +109,7 @@ public class Persistencia {
      * pois elas abstraidas e assim ficam invisiveis ao programador.
      */
     private void carregarTabelas() {
-        ArrayList<Tabela> tabs = carregarListaTabelas(false);
+        ArrayList<Tabela> tabs = carregarListaTabelas();
         this.tabelas.addAll(tabs);
     }
 
@@ -109,17 +118,12 @@ public class Persistencia {
      * (com exceção das tabelas de controle do sqlite)
      * transformadas em objetos.
      *
-     * @param tabelasOcultas Se for true ele vai retornar tambem as tabelas de referencia.
      * @return ArrayList contendo as instancias das classes dos modelos das tabelas do banco.
      */
-    private ArrayList<Tabela> carregarListaTabelas(boolean tabelasOcultas) {
+    private ArrayList<Tabela> carregarListaTabelas() {
         ArrayList<Tabela> tabelaDeSaida = new ArrayList<>();
-        String slctTodasAsTabelas = "SELECT * FROM sqlite_master WHERE type='table' AND name NOT LIKE '%sqlite%'";
+        String slctTodasAsTabelas = "SELECT * FROM sqlite_master WHERE type='table' AND name NOT LIKE '%sqlite%' AND name NOT LIKE '%\\_%' ESCAPE '\\'";
 
-        if (!tabelasOcultas) {
-            String adicaoParaTodas = " AND name NOT LIKE '%\\_%' ESCAPE '\\'";
-            slctTodasAsTabelas += adicaoParaTodas;
-        }
         ResultSet rst = executarSelect(slctTodasAsTabelas);
 
         try {
@@ -127,6 +131,7 @@ public class Persistencia {
                 String nomeTabela = rst.getString("name");
 
                 Object o = Objects.requireNonNull( Utils.getModeloPorNome(nomeTabela) );
+
                 String nomeModelo = Utils.relativeNomeClasse(o.getClass().getName());
 
                 HashMap<String, String> parametros = new HashMap<>();
@@ -135,6 +140,7 @@ public class Persistencia {
 
                 Class classeORMTabela = Tabela.class;
                 Object objClass = Utils.createClass(classeORMTabela.getName(), parametros);
+
                 tabelaDeSaida.add((Tabela) objClass);
             }
         } catch (SQLException e) {
@@ -146,6 +152,13 @@ public class Persistencia {
 
     private ResultSet getTabelasOcultas() {
         String slctTodasAsTabelas = "SELECT * FROM sqlite_master WHERE type='table' AND name NOT LIKE '%sqlite%'";
+        ResultSet rst = executarSelect(slctTodasAsTabelas);
+        return rst;
+    }
+
+    private ResultSet getTabelasRelacionamento() {
+        String slctTodasAsTabelas = "SELECT * FROM sqlite_master WHERE type='table'" +
+                " AND name NOT LIKE '%sqlite%' AND name LIKE '%\\_%' ESCAPE '\\';";
         ResultSet rst = executarSelect(slctTodasAsTabelas);
         return rst;
     }
@@ -177,6 +190,9 @@ public class Persistencia {
         }
     }
 
+    /**
+     * Metodo responsavel por carregar todas as linhas das tabelas e as transformar em objetos.
+     */
     private void carregaDados() {
         try {
             for (Tabela tb : this.tabelas) {
@@ -202,6 +218,55 @@ public class Persistencia {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Metodo responsavel por carregar as tabelas de relacionamento.
+     * As adiciona no hashmap de relacionamento.
+     */
+    private void carregarRelacionamentos() {
+
+        ResultSet rst = getTabelasRelacionamento();
+
+        try {
+            while (rst.next()){
+                String nomeTabela = rst.getString("name");
+                String[] tabelasDoRelacionamento = nomeTabela.split("_");
+
+                String nomeT1 = tabelasDoRelacionamento[0];
+                String nomeT2 = tabelasDoRelacionamento[1];
+
+                List<Tabela> tabs = getAllTabelas();
+
+                Tabela t1 = tabs.stream()
+                        .filter(tabela -> tabela.getNome().equals(nomeT1))
+                        .collect(Collectors.toList()).get(0);
+
+                Tabela t2 = tabs.stream()
+                        .filter(tabela -> tabela.getNome().equals(nomeT2))
+                        .collect(Collectors.toList()).get(0);
+
+                this.relacionamentos.computeIfAbsent( t1, k -> new ArrayList<Tabela>() ).add(t2);
+                this.relacionamentos.computeIfAbsent( t2, k -> new ArrayList<Tabela>() ).add(t1);
+
+                this.relacionamentos.computeIfPresent( t1, (tb, arL ) -> {
+                    if (arL.stream().noneMatch(tabela -> tabela.comparaNome(t2))) {
+                        arL.add(t2);
+                    }
+                    return arL;
+                });
+
+                this.relacionamentos.computeIfPresent( t2, (tb, arL ) -> {
+                    if (arL.stream().noneMatch(tabela -> tabela.comparaNome(t1))) {
+                        arL.add(t1);
+                    }
+                    return arL;
+                });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -356,6 +421,17 @@ public class Persistencia {
         }
 
         genericInsert(nomeTabela, colunas, valores);
+    }
+
+    public <T> void salvarRelacao(T obj1, T obj2) {
+        String nomeT1 = Utils.relativeNomeClasse(obj1.getClass().getName()).toLowerCase();
+        String nomeT2 = Utils.relativeNomeClasse(obj2.getClass().getName()).toLowerCase();
+
+        // TODO rever ordem dos nomes.
+        String nomeRelation =  nomeT1 + "_" + nomeT2;
+
+        //ArrayList<String>
+
     }
 
     /**
