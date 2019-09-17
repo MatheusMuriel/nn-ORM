@@ -1,0 +1,69 @@
+@startuml
+
+title Agenda DB - Diagrama de Classe
+
+namespace MVC {
+
+'------------ Modelos ------------
+namespace Modelos {
+
+    class recursos.MVC.modelos.Contato {
+    }
+    class recursos.MVC.modelos.Grupo {
+    }
+    class recursos.MVC.modelos.Telefone {
+    }
+
+}
+
+'------------ Views ------------
+class recursos.MVC.views.Contato {
+}
+class recursos.MVC.views.Grupo {
+}
+class recursos.MVC.views.Telefone {
+}
+
+'------------ Controles ------------
+class recursos.MVC.controles.ContatoController {
+}
+interface recursos.MVC.controles.Controller {
+}
+class recursos.MVC.controles.GrupoController {
+}
+class recursos.MVC.controles.TelefoneController {
+}
+
+}
+
+
+
+'------------ Annotations ------------
+interface recursos.MVC.modelos.annotations.ChavePrimaria {
+}
+interface recursos.MVC.modelos.annotations.Obrigatorio {
+}
+interface recursos.MVC.modelos.annotations.Unico {
+}
+
+
+'------------ ORM ------------
+class recursos.ORM.Coluna {
+}
+class recursos.ORM.Tabela {
+}
+class recursos.Persistencia {
+}
+class recursos.Populate {
+}
+
+
+
+recursos.MVC.controles.ContatoController .up.|> recursos.MVC.controles.Controller
+recursos.MVC.controles.ContatoController o-- recursos.Persistencia : db
+recursos.MVC.controles.GrupoController .up.|> recursos.MVC.controles.Controller
+recursos.MVC.controles.GrupoController o-- recursos.Persistencia : db
+recursos.MVC.controles.TelefoneController .up.|> recursos.MVC.controles.Controller
+recursos.MVC.controles.TelefoneController o-- recursos.Persistencia : db
+
+@enduml
