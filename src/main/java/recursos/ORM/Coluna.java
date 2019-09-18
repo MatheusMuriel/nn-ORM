@@ -58,7 +58,7 @@ public class Coluna{
 
             return sb.toString();
         } else {
-            System.err.println("O nome é obrigatorio!");
+            System.err.println("Aviso em Coluna::toString. O nome é obrigatorio!");
             return "";
         }
     }

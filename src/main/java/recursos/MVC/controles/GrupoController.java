@@ -61,9 +61,9 @@ public class GrupoController implements Controller<Grupo> {
             return resultado;
 
         } else if(tbs.size() > 1) {
-            System.err.println("Foram encontradas mais de uma tabela com o mesmo nome.");
+            System.err.println("Aviso em GrupoController::procurar. Foram encontradas mais de uma tabela com o mesmo nome.");
         } else {
-            System.err.println("Tabela não encontrada;");
+            System.err.println("Aviso em GrupoController::procurar. Tabela não encontrada;");
         }
 
         return resultado;
