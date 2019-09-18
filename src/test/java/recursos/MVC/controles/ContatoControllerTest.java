@@ -3,6 +3,7 @@ package recursos.MVC.controles;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import recursos.MVC.modelos.Contato;
+import recursos.MVC.modelos.Grupo;
 import recursos.MVC.modelos.Telefone;
 import recursos.Persistencia;
 import recursos.Populate;
@@ -136,7 +137,6 @@ class ContatoControllerTest {
 
         this.db = new Persistencia();
 
-
         ContatoController cCtrl = new ContatoController(db);
         TelefoneController tCtrl = new TelefoneController(db);
 
@@ -162,6 +162,32 @@ class ContatoControllerTest {
 
     @Test
     void vincularGrupo() {
-        // TODO Fazer teste
+        Populate.trucateContatos();
+        this.db = new Persistencia();
+        Populate.populateContatos(db);
+
+        this.db = new Persistencia();
+
+        ContatoController cCtrl = new ContatoController(db);
+        GrupoController gCtrl = new GrupoController(db);
+
+        Contato c1 = cCtrl.procurar("Jose").get(0);
+        Contato c2 = cCtrl.procurar("Maria").get(0);
+
+        Grupo g1 = gCtrl.procurar("Familia").get(0);
+        Grupo g2 = gCtrl.procurar("Trabalho").get(0);
+
+        cCtrl.vincularGrupo(c1, g1);
+        cCtrl.vincularGrupo(c2, g2);
+
+        ArrayList<Contato> rConslt1 = cCtrl.procurar("Jose");
+        assert ( rConslt1.stream()
+                .anyMatch(ct -> ct.getGrupos().stream()
+                        .anyMatch(t -> t.toString().equals(g1.toString())) ) );
+
+        ArrayList<Contato> rConslt2 = cCtrl.procurar("Maria");
+        assert ( rConslt2.stream()
+                .anyMatch(ct -> ct.getGrupos().stream()
+                        .anyMatch(t -> t.toString().equals(g2.toString())) ) );
     }
 }

@@ -66,6 +66,8 @@ public class Populate {
         populateTelefones(db);
         db = new Persistencia(true);
         populateContatoTelefone(db);
+        db = new Persistencia(true);
+        populateContatoGrupo(db);
     }
 
     /**
@@ -119,6 +121,21 @@ public class Populate {
 
         cCtrl.vincularTelefone(c1, t1);
         cCtrl.vincularTelefone(c2, t2);
+    }
+
+    public static void populateContatoGrupo(Persistencia db) {
+        db = new Persistencia();
+        ContatoController cCtrl = new ContatoController(db);
+        GrupoController gCtrl = new GrupoController(db);
+
+        Contato c1 = cCtrl.procurar("Jose").get(0);
+        Contato c2 = cCtrl.procurar("Maria").get(0);
+
+        Grupo g1 = gCtrl.procurar("Familia").get(0);
+        Grupo g2 = gCtrl.procurar("Trabalho").get(0);
+
+        cCtrl.vincularGrupo(c1, g1);
+        cCtrl.vincularGrupo(c2, g2);
     }
 
     /**

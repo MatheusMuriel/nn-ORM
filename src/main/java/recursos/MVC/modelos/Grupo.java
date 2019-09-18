@@ -3,6 +3,7 @@ package recursos.MVC.modelos;
 import recursos.MVC.modelos.annotations.ChavePrimaria;
 
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringJoiner;
 
@@ -11,6 +12,8 @@ public class Grupo {
     int id_grupo;
 
     String descricao_grupo;
+
+     ArrayList<Contato> contatos = new ArrayList<>();
 
     /**
      * Construtor padrão da classe.

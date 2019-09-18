@@ -11,6 +11,7 @@ public class Main{
         Populate.populateTabelas();
 
         Persistencia db = new Persistencia();
+
         System.out.println();
     }
 }

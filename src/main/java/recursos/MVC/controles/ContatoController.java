@@ -31,8 +31,8 @@ public class ContatoController implements Controller<Contato> {
         this.db.salvarRelacao(contato, telefone);
     }
 
-    public void vincularGrupo(Grupo grupo) {
-
+    public void vincularGrupo(Contato contato, Grupo grupo) {
+        this.db.salvarRelacao(contato, grupo);
     }
 
     @Override

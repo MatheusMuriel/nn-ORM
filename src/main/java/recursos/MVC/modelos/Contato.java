@@ -22,6 +22,8 @@ public class Contato {
 
     ArrayList<Telefone> telefones = new ArrayList<>();
 
+    ArrayList<Grupo> grupos = new ArrayList<>();
+
     ContatoController controlador;
 
     /**
@@ -126,6 +128,10 @@ public class Contato {
 
     public ArrayList<Telefone> getTelefones() {
         return telefones;
+    }
+
+    public ArrayList<Grupo> getGrupos() {
+        return grupos;
     }
 
     public ContatoController getControlador(){
