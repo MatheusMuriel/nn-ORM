@@ -68,9 +68,9 @@ public class ContatoController implements Controller<Contato> {
             return resultado;
 
         } else if(tbs.size() > 1) {
-            System.err.println("Foram encontradas mais de uma tabela com o mesmo nome.");
+            System.err.println("Aviso em ContatoController::procurar. Foram encontradas mais de uma tabela com o mesmo nome.");
         } else {
-            System.err.println("Tabela não encontrada;");
+            System.err.println("Aviso em ContatoController::procurar. Tabela não encontrada;");
         }
 
         return resultado;

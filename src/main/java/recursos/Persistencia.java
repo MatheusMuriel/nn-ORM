@@ -508,7 +508,7 @@ public class Persistencia {
         if (tabelaDoObjeto != null) {
             tabelaDoObjeto.adicionarObjeto(objeto);
         } else {
-            System.err.println("Tabela desconhecida.");
+            System.err.println("Aviso em Tabela::salvarObjeto. Tabela desconhecida.");
         }
 
         List<Field> f = getAtributos(objeto);
@@ -660,7 +660,8 @@ public class Persistencia {
                         sj.add("NOT NULL");
                         break;
                     default:
-                        System.err.println("Tentativa de conversão de annotation de tipo desconhecido.");
+                        // TODO refatorar nome do metodo para Annotation.
+                        System.err.println("Aviso em Persistencia::convertAnotation. Tentativa de conversão de annotation de tipo desconhecido.");
                         break;
                 }
             }
