@@ -274,13 +274,10 @@ public class Persistencia {
                         Tabela t2 = this.getAllTabelas().stream()
                                 .filter(t -> t.getNome().equals(finalNomeT1.replaceAll("_fk", "")))
                                 .collect(Collectors.toList()).get(0);
-                        System.out.println();
                         while (rstTabRel.next()) {
                             String valorT1 = rstTabRel.getString(nomeT1);
                             String valorT2 = rstTabRel.getString(nomeT2);
 
-                            nomeT1 = nomeT1.replaceAll("_fk","");
-                            nomeT2 = nomeT2.replaceAll("_fk","");
 
                             Object o1 = t1.filtraLinhasPorId(valorT1);
                             Object o2 = t2.filtraLinhasPorId(valorT2);
@@ -289,26 +286,33 @@ public class Persistencia {
                             Class<?> clazz1 = o1.getClass();
                             Class<?> clazz2 = o2.getClass();
 
+                            Field[] f1 = clazz1.getDeclaredFields();
+                            Field[] f2 = clazz2.getDeclaredFields();
+
                             try {
                                 for(Field field : clazz1.getDeclaredFields()) {
                                     String nomeAtt = field.getName();
-                                    if (nomeAtt.contains(nomeT2)) {
+                                    if (nomeAtt.contains(nomeT2.replaceAll("_fk",""))) {
                                         field.setAccessible(true);
                                         Object oAtt1 = field.get(o1);
                                         ArrayList l1 = (ArrayList)oAtt1;
-                                        l1.add(o2);
-                                        this.tabelas.set(this.tabelas.indexOf(tb), tb);
+                                        if ( l1.stream().noneMatch(o -> o.toString().equals(o2.toString())) ){
+                                            l1.add(o2);
+                                        }
+                                        //this.tabelas.set(this.tabelas.indexOf(tb), tb);
                                     }
                                 }
 
                                 for(Field field : clazz2.getDeclaredFields()) {
                                     String nomeAtt = field.getName();
-                                    if (nomeAtt.contains(nomeT1)) {
+                                    if (nomeAtt.contains(nomeT1.replaceAll("_fk",""))) {
                                         field.setAccessible(true);
                                         Object oAtt2 = field.get(o2);
                                         ArrayList l2 = (ArrayList)oAtt2;
-                                        l2.add(o1);
-                                        this.tabelas.set(this.tabelas.indexOf(tb), tb);
+                                        if ( l2.stream().noneMatch(o -> o.toString().equals(o1.toString())) ){
+                                            l2.add(o1);
+                                        }
+                                        //this.tabelas.set(this.tabelas.indexOf(tb), tb);
                                     }
                                 }
                             } catch (IllegalAccessException e) {

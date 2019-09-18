@@ -3,6 +3,7 @@ package recursos.MVC.modelos;
 import recursos.MVC.modelos.annotations.ChavePrimaria;
 import recursos.MVC.modelos.annotations.Obrigatorio;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringJoiner;
 
@@ -12,6 +13,8 @@ public class Telefone {
 
     @Obrigatorio
     String telefone;
+
+    ArrayList<Contato> contatos = new ArrayList<>();
 
     /**
      * Construtor padrão da classe.
