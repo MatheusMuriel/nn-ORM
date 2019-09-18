@@ -42,9 +42,7 @@ public class ContatoController implements Controller<Contato> {
 
     @Override
     public void remover(Contato contato) {
-
         this.db.removerObjeto(contato);
-
     }
 
     @Override

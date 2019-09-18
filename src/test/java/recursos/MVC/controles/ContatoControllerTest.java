@@ -86,27 +86,101 @@ class ContatoControllerTest {
         this.db = new Persistencia();
 
         ContatoController cCtrl = new ContatoController(db);
+        TelefoneController tCtrl = new TelefoneController(db);
+        GrupoController gCtrl = new GrupoController(db);
 
-        Contato c1 = new Contato("Fernando", "Pessoa", "jose.silva@gmail.com");
+
+
+        // ------ Teste 1 ------
+        Contato     c1 = new Contato("Fernando", "Pessoa", "jose.silva@gmail.com");
+        Telefone    t1 = new Telefone("99854-1356");
+        Grupo       g1 = new Grupo("Balada");
+
         cCtrl.adicionar(c1);
-        cCtrl = new ContatoController(new Persistencia());
+        tCtrl.adicionar(t1);
+        gCtrl.adicionar(g1);
+
+        cCtrl.vincularTelefone  (c1, t1);
+        cCtrl.vincularGrupo     (c1, g1);
+
         cCtrl.remover(c1);
+
         ArrayList<Contato> rConslt1 = cCtrl.procurar(c1.getPrimeiro_nome());
-        assert ( rConslt1.stream().noneMatch(ct -> ct.toString().equals(c1.toString())) );
+        assert ( rConslt1.stream()
+                .noneMatch(ct -> ct.toString().equals(c1.toString())) );
 
-        Contato c2 = new Contato("Silvio", "Antonelo", "maria_antonia@gmail.com");
+        ArrayList<Telefone> rConsltTelefone1 = tCtrl.procurar(t1.getTelefone());
+        assert ( rConsltTelefone1.stream()
+                .anyMatch(tl -> tl.getContatos().stream()
+                        .noneMatch(c -> c.toString().equals(c1.toString())) ) );
+
+        ArrayList<Grupo> rConsltGrupo1 = gCtrl.procurar(g1.getDescricao_grupo());
+        assert ( rConsltGrupo1.stream()
+                .anyMatch(gp -> gp.getContatos().stream()
+                        .noneMatch(c -> c.toString().equals(c1.toString())) ) );
+
+
+
+
+
+        // ------ Teste 2 ------
+        Contato     c2 = new Contato("Silvio", "Antonelo", "maria_antonia@gmail.com");
+        Telefone    t2 = new Telefone("93265-4120");
+        Grupo       g2 = new Grupo("Uno");
+
         cCtrl.adicionar(c2);
+        tCtrl.adicionar(t2);
+        gCtrl.adicionar(g2);
+
+        cCtrl.vincularTelefone  (c2, t2);
+        cCtrl.vincularGrupo     (c2, g2);
+
         cCtrl = new ContatoController(new Persistencia());
         cCtrl.remover(c1);
-        ArrayList<Contato> rConslt2 = cCtrl.procurar(c2.getPrimeiro_nome());
-        assert ( rConslt2.stream().noneMatch(ct -> ct.toString().equals(c2.toString())) );
 
+        ArrayList<Contato> rConslt2 = cCtrl.procurar(c2.getPrimeiro_nome());
+        assert ( rConslt2.stream()
+                .noneMatch(ct -> ct.toString().equals(c2.toString())) );
+
+        ArrayList<Telefone> rConsltTelefone2 = tCtrl.procurar(t2.getTelefone());
+        assert ( rConsltTelefone2.stream()
+                .anyMatch(tl -> tl.getContatos().stream()
+                        .noneMatch(c -> c.toString().equals(c2.toString())) ) );
+
+        ArrayList<Grupo> rConsltGrupo2 = gCtrl.procurar(g2.getDescricao_grupo());
+        assert ( rConsltGrupo2.stream()
+                .anyMatch(gp -> gp.getContatos().stream()
+                        .noneMatch(c -> c.toString().equals(c2.toString())) ) );
+
+
+        // ------ Teste 3 ------
         Contato c3 = new Contato("Alfajor", "Chocq", "robert-souza@gmail.com");
+        Telefone t3 = new Telefone("75841-6587");
+        Grupo g3 = new Grupo("Uno");
+
         cCtrl.adicionar(c3);
+        tCtrl.adicionar(t3);
+        gCtrl.adicionar(g3);
+
+        cCtrl.vincularTelefone  (c3, t3);
+        cCtrl.vincularGrupo     (c3, g3);
+
+
         cCtrl = new ContatoController(new Persistencia());
         cCtrl.remover(c1);
         ArrayList<Contato> rConslt3 = cCtrl.procurar(c3.getPrimeiro_nome());
-        assert ( rConslt3.stream().noneMatch(ct -> ct.toString().equals(c3.toString())) );
+        assert ( rConslt3.stream()
+                .noneMatch(ct -> ct.toString().equals(c3.toString())) );
+
+        ArrayList<Telefone> rConsltTelefone3 = tCtrl.procurar(t3.getTelefone());
+        assert ( rConsltTelefone3.stream()
+                .anyMatch(tl -> tl.getContatos().stream()
+                        .noneMatch(c -> c.toString().equals(c3.toString())) ) );
+
+        ArrayList<Grupo> rConsltGrupo3 = gCtrl.procurar(g3.getDescricao_grupo());
+        assert ( rConsltGrupo3.stream()
+                .anyMatch(gp -> gp.getContatos().stream()
+                        .noneMatch(c -> c.toString().equals(c3.toString())) ) );
     }
 
     @Test

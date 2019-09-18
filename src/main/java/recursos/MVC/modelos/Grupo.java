@@ -78,4 +78,8 @@ public class Grupo {
 
         return s1;
     }
+
+    public ArrayList<Contato> getContatos() {
+        return contatos;
+    }
 }

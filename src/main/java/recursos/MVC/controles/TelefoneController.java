@@ -36,7 +36,7 @@ public class TelefoneController implements Controller<Telefone> {
 
     @Override
     public void remover(Telefone telefone) {
-
+        this.db.removerObjeto(telefone);
     }
 
     @Override

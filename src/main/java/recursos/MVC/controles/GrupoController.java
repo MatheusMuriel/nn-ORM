@@ -35,7 +35,7 @@ public class GrupoController implements Controller<Grupo> {
 
     @Override
     public void remover(Grupo grupo) {
-
+        this.db.removerObjeto(grupo);
     }
 
     @Override

@@ -75,4 +75,8 @@ public class Telefone {
     public String normalize(String s) {
         return s.replaceAll("(\\s|\\(|\\)|\\-|\\+)", "");
     }
+
+    public ArrayList<Contato> getContatos() {
+        return contatos;
+    }
 }
