@@ -1,6 +1,7 @@
 package recursos;
 
 import recursos.MVC.controles.Controller;
+import recursos.MVC.modelos.Contato;
 import recursos.MVC.modelos.Grupo;
 import recursos.ORM.Coluna;
 import recursos.ORM.Tabela;
@@ -532,6 +533,27 @@ public class Persistencia {
         }
 
         genericInsert(nomeTabela, colunas, valores);
+    }
+
+    public <T> void removerObjeto(T objeto) {
+        String nomeTabela = Utils.relativeNomeClasse(objeto.getClass().getName()).toLowerCase();
+        String id_Ob = "";
+
+        Tabela tabelaDoObjeto = this.tabelas.stream()
+                .filter(tb -> tb.getNome().equals(nomeTabela))
+                .findAny()
+                .orElse(null);
+
+        if (tabelaDoObjeto != null) {
+            id_Ob = tabelaDoObjeto.getIdPorObject(objeto);
+            tabelaDoObjeto.removerObjeto(objeto);
+
+            String deleteComand = "DELETE FROM " + nomeTabela + " WHERE id_" + nomeTabela + " = " + id_Ob + ";";
+
+            this.executar(deleteComand);
+        } else {
+            System.err.println("Aviso em Tabela::removerObjeto. Tabela desconhecida.");
+        }
     }
 
     public <T> void salvarRelacao(T obj1, T obj2) {

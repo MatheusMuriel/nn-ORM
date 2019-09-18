@@ -79,7 +79,34 @@ class ContatoControllerTest {
 
     @Test
     void remover() {
-        // TODO Fazer teste
+        Persistencia.droparTodasAsTabelas();
+        Populate.criarTabelas();
+        this.db = new Persistencia();
+        Populate.populateTabelas();
+        this.db = new Persistencia();
+
+        ContatoController cCtrl = new ContatoController(db);
+
+        Contato c1 = new Contato("Fernando", "Pessoa", "jose.silva@gmail.com");
+        cCtrl.adicionar(c1);
+        cCtrl = new ContatoController(new Persistencia());
+        cCtrl.remover(c1);
+        ArrayList<Contato> rConslt1 = cCtrl.procurar(c1.getPrimeiro_nome());
+        assert ( rConslt1.stream().noneMatch(ct -> ct.toString().equals(c1.toString())) );
+
+        Contato c2 = new Contato("Silvio", "Antonelo", "maria_antonia@gmail.com");
+        cCtrl.adicionar(c2);
+        cCtrl = new ContatoController(new Persistencia());
+        cCtrl.remover(c1);
+        ArrayList<Contato> rConslt2 = cCtrl.procurar(c2.getPrimeiro_nome());
+        assert ( rConslt2.stream().noneMatch(ct -> ct.toString().equals(c2.toString())) );
+
+        Contato c3 = new Contato("Alfajor", "Chocq", "robert-souza@gmail.com");
+        cCtrl.adicionar(c3);
+        cCtrl = new ContatoController(new Persistencia());
+        cCtrl.remover(c1);
+        ArrayList<Contato> rConslt3 = cCtrl.procurar(c3.getPrimeiro_nome());
+        assert ( rConslt3.stream().noneMatch(ct -> ct.toString().equals(c3.toString())) );
     }
 
     @Test

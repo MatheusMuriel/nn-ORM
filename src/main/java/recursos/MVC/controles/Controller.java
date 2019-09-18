@@ -9,9 +9,9 @@ public interface Controller<T> {
 
     public void adicionar(T tOb);
 
-    public void remover();
+    public void remover(T tOb);
 
-    public void atualiza();
+    public void atualiza(T tOb);
 
     public ArrayList<T> procurar(String ob); // Sobrescrever o tipo do ArrayList
 

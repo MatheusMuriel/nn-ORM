@@ -35,12 +35,12 @@ public class TelefoneController implements Controller<Telefone> {
     }
 
     @Override
-    public void remover() {
+    public void remover(Telefone telefone) {
 
     }
 
     @Override
-    public void atualiza() {
+    public void atualiza(Telefone telefone) {
 
     }
 

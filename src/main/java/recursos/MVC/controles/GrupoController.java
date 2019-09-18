@@ -34,12 +34,12 @@ public class GrupoController implements Controller<Grupo> {
     }
 
     @Override
-    public void remover() {
+    public void remover(Grupo grupo) {
 
     }
 
     @Override
-    public void atualiza() {
+    public void atualiza(Grupo grupo) {
 
     }
 

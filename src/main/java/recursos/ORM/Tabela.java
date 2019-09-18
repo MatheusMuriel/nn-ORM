@@ -105,6 +105,10 @@ public class Tabela {
         this.linhas.add(objeto);
     }
 
+    public void removerObjeto(Object objeto) {
+        this.linhas.remove(objeto);
+    }
+
     public ArrayList<Object> getLinhas() {
         return linhas;
     }
@@ -153,8 +157,37 @@ public class Tabela {
             }
 
         }
-
         return oSaida;
+    }
+
+    public String getIdPorObject(Object object) {
+        ArrayList<Object> todasLinhas = this.getLinhas();
+
+        String saida = "";
+
+        for (Object o : todasLinhas) {
+
+            if (!saida.equals("")){
+                break;
+            }
+
+            if ( object.toString().equals( o.toString() ) ) {
+                Class<?> clazz = o.getClass();
+
+                for(Field field : clazz.getDeclaredFields()) {
+                    String nomeAtt = field.getName();
+                    if (nomeAtt.contains("id_")) {
+                        try {
+                            field.setAccessible(true);
+                            saida = String.valueOf( field.get(o) );
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+        return saida;
     }
 
 }
