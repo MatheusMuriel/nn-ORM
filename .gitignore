@@ -1,7 +1,7 @@
 *.db
 *.sqlite
 **.iml
-
+.idea/inspectionProfiles/
 # Created by https://www.gitignore.io/api/vim,java,linux,windows,intellij,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=vim,java,linux,windows,intellij,visualstudiocode
 
