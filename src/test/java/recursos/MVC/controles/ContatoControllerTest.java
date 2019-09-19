@@ -17,11 +17,11 @@ class ContatoControllerTest {
 
     @BeforeEach
     void setUp() {
-        Persistencia.droparTodasAsTabelas();
-        Populate.criarTabelas();
+        //Persistencia.droparTodasAsTabelas();
+        //Populate.criarTabelas();
         this.db = new Persistencia();
-        Populate.populateTabelas();
-        this.db = new Persistencia();
+        //Populate.populateTabelas();
+        //this.db = new Persistencia();
     }
 
     @Test
@@ -82,8 +82,6 @@ class ContatoControllerTest {
         Persistencia.droparTodasAsTabelas();
         Populate.criarTabelas();
         this.db = new Persistencia();
-        Populate.populateTabelas();
-        this.db = new Persistencia();
 
         ContatoController cCtrl = new ContatoController(db);
         TelefoneController tCtrl = new TelefoneController(db);
@@ -105,10 +103,12 @@ class ContatoControllerTest {
 
         cCtrl.remover(c1);
 
+
         ArrayList<Contato> rConslt1 = cCtrl.procurar(c1.getPrimeiro_nome());
         assert ( rConslt1.stream()
                 .noneMatch(ct -> ct.toString().equals(c1.toString())) );
 
+        tCtrl = new TelefoneController(new Persistencia());
         ArrayList<Telefone> rConsltTelefone1 = tCtrl.procurar(t1.getTelefone());
         assert ( rConsltTelefone1.stream()
                 .anyMatch(tl -> tl.getContatos().stream()
@@ -136,7 +136,9 @@ class ContatoControllerTest {
         cCtrl.vincularGrupo     (c2, g2);
 
         cCtrl = new ContatoController(new Persistencia());
-        cCtrl.remover(c1);
+        cCtrl.remover(c2);
+
+        this.db = new Persistencia();
 
         ArrayList<Contato> rConslt2 = cCtrl.procurar(c2.getPrimeiro_nome());
         assert ( rConslt2.stream()
@@ -158,16 +160,25 @@ class ContatoControllerTest {
         Telefone t3 = new Telefone("75841-6587");
         Grupo g3 = new Grupo("Uno");
 
+        this.db = new Persistencia();
+
         cCtrl.adicionar(c3);
         tCtrl.adicionar(t3);
         gCtrl.adicionar(g3);
+
+        this.db = new Persistencia();
 
         cCtrl.vincularTelefone  (c3, t3);
         cCtrl.vincularGrupo     (c3, g3);
 
 
+        this.db = new Persistencia();
+
         cCtrl = new ContatoController(new Persistencia());
-        cCtrl.remover(c1);
+        cCtrl.remover(c3);
+
+        this.db = new Persistencia();
+
         ArrayList<Contato> rConslt3 = cCtrl.procurar(c3.getPrimeiro_nome());
         assert ( rConslt3.stream()
                 .noneMatch(ct -> ct.toString().equals(c3.toString())) );

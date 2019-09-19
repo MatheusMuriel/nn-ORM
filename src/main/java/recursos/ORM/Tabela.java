@@ -102,7 +102,13 @@ public class Tabela {
     }
 
     public void adicionarObjeto(Object objeto) {
-        this.linhas.add(objeto);
+
+        // Verifica e adiciona somente se o objeto não existir na linha
+        if ( linhas.stream().noneMatch( l -> l.toString().equals(objeto.toString())) ) {
+            this.linhas.add(objeto);
+        } else {
+            System.err.println("Aviso em Tabela::adicionarObjeto. Foi tentado adicior um objeto já existente.");
+        }
     }
 
     public void removerObjeto(Object objeto) {

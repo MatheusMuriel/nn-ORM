@@ -52,6 +52,7 @@ public class ContatoController implements Controller<Contato> {
 
     @Override
     public ArrayList<Contato> procurar(String nome) {
+        this.db = new Persistencia();
         List<Tabela> tbs = this.db.getTabelaPorClasse(Contato.class);
         ArrayList<Contato> resultado = new ArrayList<>();
 

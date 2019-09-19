@@ -46,6 +46,7 @@ public class TelefoneController implements Controller<Telefone> {
 
     @Override
     public ArrayList<Telefone> procurar(String telefone) {
+        this.db = new Persistencia();
         List<Tabela> tbs = this.db.getTabelaPorClasse(Telefone.class);
         ArrayList<Telefone> resultado = new ArrayList<>();
 

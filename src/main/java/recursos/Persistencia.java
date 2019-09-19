@@ -84,6 +84,9 @@ public class Persistencia {
 
     public ArrayList<Tabela> getTabelaPorNome(String nome) {
 
+        this.carregarTabelas();
+        this.carregaDados();
+
         // Pega todas as tabelas
         ArrayList<Tabela> tabelasFiltradas = getAllTabelas();
 
@@ -94,7 +97,6 @@ public class Persistencia {
     }
 
     public <T> ArrayList<Tabela> getTabelaPorClasse(Class<T> tClass) {
-
         // Relativiza o nome pq as tabelas só tem o nome relativo.
         // Transforma em LowerCase pq esse é o padrão de nome de tabela.
         String nomeTClass = Utils.relativeNomeClasse(tClass.getName()).toLowerCase();
@@ -112,7 +114,8 @@ public class Persistencia {
      */
     private void carregarTabelas() {
         ArrayList<Tabela> tabs = carregarListaTabelas();
-        this.tabelas.addAll(tabs);
+
+        this.tabelas = tabs;
     }
 
     /**
@@ -507,7 +510,7 @@ public class Persistencia {
             .orElse(null);
 
         if (tabelaDoObjeto != null) {
-            tabelaDoObjeto.adicionarObjeto(objeto);
+            //tabelaDoObjeto.adicionarObjeto(objeto);
         } else {
             System.err.println("Aviso em Tabela::salvarObjeto. Tabela desconhecida.");
         }
@@ -533,6 +536,7 @@ public class Persistencia {
         }
 
         genericInsert(nomeTabela, colunas, valores);
+        this.carregaDados();
     }
 
     public <T> void removerObjeto(T objeto) {
@@ -550,15 +554,50 @@ public class Persistencia {
 
             String deleteComand = "DELETE FROM " + nomeTabela + " WHERE id_" + nomeTabela + " = " + id_Ob + ";";
 
-            this.executar(deleteComand);
+            if ( !id_Ob.isEmpty() ) {
+                this.executar(deleteComand);
+            }
+            this.carregaDados();
+            this.carregaDadosRelacionamento();
         } else {
             System.err.println("Aviso em Tabela::removerObjeto. Tabela desconhecida.");
         }
     }
 
     public <T> void salvarRelacao(T obj1, T obj2) {
+
+        this.carregaDados();
+        this.carregarRelacionamentos();
+        this.carregaDadosRelacionamento();
+
         String nomeT1 = Utils.relativeNomeClasse(obj1.getClass().getName()).toLowerCase();
         String nomeT2 = Utils.relativeNomeClasse(obj2.getClass().getName()).toLowerCase();
+
+        Tabela t1 = this.getAllTabelas().stream()
+                .filter(t -> t.getNome().equals(nomeT1.replaceAll("_fk", "")))
+                .collect(Collectors.toList()).get(0);
+
+        Tabela t2 = this.getAllTabelas().stream()
+                .filter(t -> t.getNome().equals(nomeT2.replaceAll("_fk", "")))
+                .collect(Collectors.toList()).get(0);
+
+        Object ob1 = null;
+        List lOb1 = t1.getLinhas().stream()
+                .filter(l -> l.toString().equals(obj1.toString()))
+                .collect(Collectors.toList());
+
+        Object ob2 = null;
+        List lOb2 = t2.getLinhas().stream()
+                .filter(l -> l.toString().equals(obj2.toString() ) )
+                .collect(Collectors.toList());
+
+        if ( lOb1.isEmpty() || lOb2.isEmpty() ) {
+            System.err.println("Aviso em Persistencia::salvarRelacao. Objeto não existe na lista.");
+            return;
+        } else {
+            ob1 = lOb1.get(0);
+            ob2 = lOb2.get(0);
+        }
 
         String nomeRelation1 =  nomeT1 + "_" + nomeT2;
         String nomeRelation2 =  nomeT2 + "_" + nomeT1;
@@ -571,8 +610,8 @@ public class Persistencia {
 
         ArrayList<String> valores = new ArrayList<>();
 
-        List<Field> atributos1 = getAtributos(obj1);
-        List<Field> atributos2 = getAtributos(obj2);
+        List<Field> atributos1 = getAtributos(ob1);
+        List<Field> atributos2 = getAtributos(ob2);
 
         atributos1.forEach(fi -> fi.setAccessible(true));
         atributos2.forEach(fi -> fi.setAccessible(true));
@@ -594,8 +633,8 @@ public class Persistencia {
         String id2 = "";
 
         try {
-            id1 = String.valueOf(f1.get(obj1));
-            id2 = String.valueOf(f2.get(obj2));
+            id1 = String.valueOf(f1.get(ob1));
+            id2 = String.valueOf(f2.get(ob2));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -614,9 +653,9 @@ public class Persistencia {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        //ArrayList<String>
-
+        this.carregaDados();
+        this.carregarRelacionamentos();
+        this.carregaDadosRelacionamento();
     }
 
     /**

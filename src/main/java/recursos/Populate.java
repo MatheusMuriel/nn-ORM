@@ -60,13 +60,9 @@ public class Populate {
     public static void populateTabelas() {
         Persistencia db = new Persistencia(true);
         populateContatos(db);
-        db = new Persistencia(true);
         populateGrupos(db);
-        db = new Persistencia(true);
         populateTelefones(db);
-        db = new Persistencia(true);
         populateContatoTelefone(db);
-        db = new Persistencia(true);
         populateContatoGrupo(db);
     }
 
