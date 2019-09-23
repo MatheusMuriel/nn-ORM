@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ContatoControllerTest {
+class ContatoViewControllerTest {
     Persistencia db;
 
     @BeforeEach

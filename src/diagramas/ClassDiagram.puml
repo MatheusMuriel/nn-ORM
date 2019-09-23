@@ -65,11 +65,11 @@ title Agenda DB - Diagrama de Classe
 
     '------------ Views ------------
 
-        class recursos.MVC.views.Contato {
+        class recursos.MVC.views.ContatoView {
         }
-        class recursos.MVC.views.Grupo {
+        class recursos.MVC.views.GrupoView {
         }
-        class recursos.MVC.views.Telefone {
+        class recursos.MVC.views.TelefoneView {
         }
 
 

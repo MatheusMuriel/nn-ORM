@@ -37,11 +37,13 @@ public class ContatoController implements Controller<Contato> {
 
     @Override
     public void adicionar(Contato contato) {
+        this.db = new Persistencia();
         this.db.salvarObjeto(contato);
     }
 
     @Override
     public void remover(Contato contato) {
+        this.db = new Persistencia();
         this.db.removerObjeto(contato);
     }
 
@@ -83,5 +85,16 @@ public class ContatoController implements Controller<Contato> {
         return todos.stream()
                 .filter(c ->  String.valueOf(c.getId_contato()).equals(id) )
                 .collect(Collectors.toList()).get(0);
+    }
+
+    public ArrayList<Contato> procurarPorNumero(String numeroConsulta) {
+        ArrayList<Contato> todos = this.procurar("");
+        List<Contato> result = todos.stream()
+                .filter(contato -> contato.getTelefones().stream()
+                                    .anyMatch(telefone -> telefone
+                                            .comparaTelefone(numeroConsulta)) )
+                .collect(Collectors.toList());
+
+        return new ArrayList<>(result);
     }
 }

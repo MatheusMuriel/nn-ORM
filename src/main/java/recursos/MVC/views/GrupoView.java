@@ -1,4 +1,4 @@
 package recursos.MVC.views;
 
-public class Grupo {
+public class GrupoView {
 }

@@ -86,6 +86,8 @@ public class Persistencia {
 
         this.carregarTabelas();
         this.carregaDados();
+        this.carregarRelacionamentos();
+        this.carregaDadosRelacionamento();
 
         // Pega todas as tabelas
         ArrayList<Tabela> tabelasFiltradas = getAllTabelas();
