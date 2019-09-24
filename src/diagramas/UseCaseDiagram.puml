@@ -1,0 +1,6 @@
+@startuml
+Usuario -> (Consulta Contato)
+(Consulta Contato) -- (Consulta por nome)
+(Consulta Contato) -- (Consulta por numero)
+(Consulta Contato) -- (Listar todos)
+@enduml
