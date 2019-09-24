@@ -4,7 +4,6 @@ import recursos.MVC.controles.ContatoController;
 import recursos.MVC.modelos.Contato;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class ContatoView implements GenericView<Contato> {
@@ -59,7 +58,31 @@ public class ContatoView implements GenericView<Contato> {
 
     @Override
     public void deletar(Scanner inp) {
+        System.out.println("Qual contato você deseja deletar? ");
+        System.out.println("Deseja consultar por:");
 
+        System.out.println("1 - Nome");
+        System.out.println("2 - Numero");
+
+        boolean valido = false;
+        while (!valido) {
+            System.out.print("Escolha: ");
+            String escolha = inp.nextLine();
+            switch (escolha) {
+                case "1":
+                    deletarPorNome(inp);
+                    valido = true;
+                    break;
+                case "2":
+                    deletarPorNumero(inp);
+                    valido = true;
+                    break;
+                default:
+                    valido = false;
+                    System.err.println("Modo de consulta invalido. Por favor escolha outro.");
+                    break;
+            }
+        }
     }
 
     @Override
@@ -113,73 +136,6 @@ public class ContatoView implements GenericView<Contato> {
 
     @Override
     public void consultar(Scanner inp) {
-
-    }
-
-    @Override
-    public void listarTodos() {
-
-    }
-
-    public void alterarContato(Scanner input) {
-    }
-
-    public void deletarContato(Scanner inp) {
-        System.out.println("Qual contato você deseja deletar? ");
-        System.out.println("Deseja consultar por:");
-
-        System.out.println("1 - Nome");
-        System.out.println("2 - Numero");
-
-        boolean valido = false;
-        while (!valido) {
-            System.out.print("Escolha: ");
-            String escolha = inp.nextLine();
-            switch (escolha) {
-                case "1":
-                    deletarPorNome(inp);
-                    valido = true;
-                    break;
-                case "2":
-                    deletarPorNumero(inp);
-                    valido = true;
-                    break;
-                default:
-                    valido = false;
-                    System.err.println("Modo de consulta invalido. Por favor escolha outro.");
-                    break;
-            }
-        }
-    }
-
-    public void deletarPorNome(Scanner inp) {
-        System.out.print("\nNome: ");
-        String nome = inp.nextLine();
-
-        ArrayList <Contato> result = new ContatoController().procurar(nome);
-        if ( result.size() < 1 ) {
-            System.out.println("Não foi encontrado nenhum contato com esse numero.");
-        } else {
-            new ContatoController().remover( result.get(0) );
-        }
-    }
-
-    public void deletarPorNumero(Scanner inp) {
-        System.out.print("\nNumero: ");
-        String numero = inp.nextLine();
-        ArrayList <Contato> result = new ContatoController().procurarPorNumero(numero);
-        if ( result.size() < 1 ) {
-            System.out.println("Não foi encontrado nenhum contato com esse numero.");
-        } else {
-            new ContatoController().remover( result.get(0) );
-        }
-    }
-
-    public void adicionarContato(Scanner input) {
-
-    }
-
-    public void consultaContato(Scanner inp) {
         System.out.println("Deseja consultar por:");
 
         System.out.println("1 - Nome");
@@ -201,7 +157,7 @@ public class ContatoView implements GenericView<Contato> {
                     break;
                 case "3":
                     valido = true;
-                    listarTodosContatos();
+                    listarTodos();
                     break;
                 default:
                     valido = false;
@@ -211,9 +167,44 @@ public class ContatoView implements GenericView<Contato> {
         }
     }
 
-    private void listarTodosContatos() {
+    @Override
+    public void listarTodos() {
         ArrayList<Contato> result = new ContatoController().procurar("");
         printarResultado(result);
+    }
+
+    @Override
+    public void printarResultado(ArrayList<Contato> result) {
+        if (result.size() < 1) {
+            System.out.println("Nenhum contato encontrado :c");
+        } else {
+            System.out.println(":::::                   :::::");
+            result.forEach(contato -> System.out.println(contato.toString()));
+            System.out.println(":::::                   :::::");
+        }
+    }
+
+    private void deletarPorNome(Scanner inp) {
+        System.out.print("\nNome: ");
+        String nome = inp.nextLine();
+
+        ArrayList <Contato> result = new ContatoController().procurar(nome);
+        if ( result.size() < 1 ) {
+            System.out.println("Não foi encontrado nenhum contato com esse numero.");
+        } else {
+            new ContatoController().remover( result.get(0) );
+        }
+    }
+
+    private void deletarPorNumero(Scanner inp) {
+        System.out.print("\nNumero: ");
+        String numero = inp.nextLine();
+        ArrayList <Contato> result = new ContatoController().procurarPorNumero(numero);
+        if ( result.size() < 1 ) {
+            System.out.println("Não foi encontrado nenhum contato com esse numero.");
+        } else {
+            new ContatoController().remover( result.get(0) );
+        }
     }
 
     private void consultaNumero(Scanner inp) {
@@ -233,14 +224,5 @@ public class ContatoView implements GenericView<Contato> {
         ArrayList <Contato> result = new ContatoController().procurar(nomeConsulta);
         printarResultado(result);
     }
-
-    public void printarResultado(ArrayList<Contato> result) {
-        if (result.size() < 1) {
-            System.out.println("Nenhum contato encontrado :c");
-        } else {
-            System.out.println(":::::                   :::::");
-            result.forEach(contato -> System.out.println(contato.toString()));
-            System.out.println(":::::                   :::::");
-        }
-    }
+    
 }
