@@ -58,7 +58,7 @@ public class TelefoneView implements GenericView<Telefone>{
 
     @Override
     public void deletar(Scanner inp) {
-        //TODO
+        deletarPorNumero(inp);
     }
 
     @Override
@@ -166,10 +166,53 @@ public class TelefoneView implements GenericView<Telefone>{
     }
 
     private void consultarPorGrupo(Scanner inp) {
-        //TODO
+        System.out.println("Qual grupo você deseja consultar? ");
+        System.out.print("Descrição: ");
+        String desc = inp.nextLine();
+
+        ArrayList <Telefone> result = new TelefoneController().procurarPorGrupo(desc);
+        printarResultado(result);
     }
 
     private void consultarPorContato(Scanner inp) {
-        //TODO
+        System.out.println("Qual contato você deseja consultar? ");
+        System.out.print("Nome: ");
+        String nome = inp.nextLine();
+
+        ArrayList <Telefone> result = new TelefoneController().procurarPorContato(nome);
+        printarResultado(result);
+    }
+
+    private void deletarPorNumero(Scanner inp) {
+        System.out.print("\nNumero: ");
+        String num = inp.nextLine();
+
+        ArrayList <Telefone> result = new TelefoneController().procurar(num);
+        if ( result.size() < 1 ) {
+            System.out.println("Não foi encontrado nenhum telefone com esse numero.");
+        } else {
+            System.out.println("Deseja deletar o telefone: ");
+            System.out.println(result.get(0).toString());
+            System.out.println("S/N");
+            System.out.print("\n> ");
+            String escolha = inp.nextLine();
+
+            boolean escolhaValida = false;
+            while (!escolhaValida) {
+                switch (escolha.toUpperCase()) {
+                    case "S":
+                        escolhaValida = true;
+                        new TelefoneController().remover(result.get(0));
+                        break;
+                    case "N":
+                        escolhaValida = true;
+                        System.out.println("Cancelado.");
+                        break;
+                    default:
+                        escolhaValida = false;
+                        break;
+                }
+            }
+        }
     }
 }

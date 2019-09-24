@@ -78,4 +78,21 @@ public class TelefoneController implements Controller<Telefone> {
                 .filter(c ->  String.valueOf(c.getId_telefone()).equals(id) )
                 .collect(Collectors.toList()).get(0);
     }
+
+    public ArrayList<Telefone> procurarPorGrupo(String descricao) {
+        ArrayList<Telefone> todos = this.procurar("");
+        return todos.stream()
+                .filter(telefone -> telefone.getContatos().stream()
+                        .anyMatch(contato -> contato.getGrupos().stream()
+                                                    .anyMatch(grupo -> grupo.comparaGrupo(descricao))))
+                .collect(Collectors.toCollection(ArrayList<Telefone>::new));
+    }
+
+    public ArrayList<Telefone> procurarPorContato(String nome) {
+        ArrayList<Telefone> todos = this.procurar("");
+        return todos.stream()
+                .filter(telefone -> telefone.getContatos().stream()
+                        .anyMatch(contato -> contato.comparaNome(nome)))
+                .collect(Collectors.toCollection(ArrayList<Telefone>::new));
+    }
 }

@@ -58,7 +58,7 @@ public class GrupoView implements GenericView<Grupo>{
 
     @Override
     public void deletar(Scanner inp) {
-        //TODO
+        deletarPorDescricao(inp);
     }
 
     @Override
@@ -166,11 +166,54 @@ public class GrupoView implements GenericView<Grupo>{
     }
 
     private void consultarPorTelefone(Scanner inp) {
-        //TODO
+        System.out.println("Qual numero você deseja consultar? ");
+        System.out.print("Numero: ");
+        String num = inp.nextLine();
+
+        ArrayList <Grupo> result = new GrupoController().procurarPorTelefone(num);
+        printarResultado(result);
     }
 
     private void consultarPorContato(Scanner inp) {
-        //TODO
+        System.out.println("Qual contato você deseja consultar? ");
+        System.out.print("Nome: ");
+        String nome = inp.nextLine();
+
+        ArrayList <Grupo> result = new GrupoController().procurarPorContato(nome);
+        printarResultado(result);
+    }
+
+    private void deletarPorDescricao(Scanner inp) {
+        System.out.print("\nDescrição: ");
+        String desc = inp.nextLine();
+
+        ArrayList <Grupo> result = new GrupoController().procurar(desc);
+        if ( result.size() < 1 ) {
+            System.out.println("Não foi encontrado nenhum grupo com essa descrição.");
+        } else {
+            System.out.println("Deseja deletar o grupo: ");
+            System.out.println(result.get(0).toString());
+            System.out.println("S/N");
+            System.out.print("\n> ");
+            String escolha = inp.nextLine();
+
+            boolean escolhaValida = false;
+            while (!escolhaValida) {
+                switch (escolha.toUpperCase()) {
+                    case "S":
+                        escolhaValida = true;
+                        new GrupoController().remover(result.get(0));
+                        break;
+                    case "N":
+                        escolhaValida = true;
+                        System.out.println("Cancelado.");
+                        break;
+                    default:
+                        escolhaValida = false;
+                        break;
+                }
+            }
+        }
     }
 
 }

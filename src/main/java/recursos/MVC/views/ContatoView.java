@@ -213,7 +213,12 @@ public class ContatoView implements GenericView<Contato> {
     }
 
     private void consultaPorGrupo(Scanner inp) {
-        //TODO fazer consulta por grupo
+        System.out.println("Qual grupo você deseja consultar? ");
+        System.out.print("Descrição: ");
+        String desc = inp.nextLine();
+
+        ArrayList <Contato> result = new ContatoController().procurarPorGrupo(desc);
+        printarResultado(result);
     }
 
     private void deletarPorNome(Scanner inp) {
@@ -224,7 +229,28 @@ public class ContatoView implements GenericView<Contato> {
         if ( result.size() < 1 ) {
             System.out.println("Não foi encontrado nenhum contato com esse numero.");
         } else {
-            new ContatoController().remover( result.get(0) );
+            System.out.println("Deseja deletar o contato: ");
+            System.out.println(result.get(0).toString());
+            System.out.println("S/N");
+            System.out.print("> ");
+            String escolha = inp.nextLine();
+
+            boolean escolhaValida = false;
+            while (!escolhaValida) {
+                switch (escolha.toUpperCase()) {
+                    case "S":
+                        escolhaValida = true;
+                        new ContatoController().remover(result.get(0));
+                        break;
+                    case "N":
+                        escolhaValida = true;
+                        System.out.println("Cancelado.");
+                        break;
+                    default:
+                        escolhaValida = false;
+                        break;
+                }
+            }
         }
     }
 
@@ -235,10 +261,29 @@ public class ContatoView implements GenericView<Contato> {
         if ( result.size() < 1 ) {
             System.out.println("Não foi encontrado nenhum contato com esse numero.");
         } else {
-            new ContatoController().remover( result.get(0) );
+            System.out.println("Deseja deletar o contato: ");
+            System.out.println(result.get(0).toString());
+            System.out.println("S/N");
+            System.out.print("\n> ");
+            String escolha = inp.nextLine();
+
+            boolean escolhaValida = false;
+            while (!escolhaValida) {
+                switch (escolha.toUpperCase()) {
+                    case "S":
+                        escolhaValida = true;
+                        new ContatoController().remover(result.get(0));
+                        break;
+                    case "N":
+                        escolhaValida = true;
+                        System.out.println("Cancelado.");
+                        break;
+                    default:
+                        escolhaValida = false;
+                        break;
+                }
+            }
         }
     }
-
-
 
 }

@@ -97,4 +97,15 @@ public class ContatoController implements Controller<Contato> {
 
         return new ArrayList<>(result);
     }
+
+    public ArrayList<Contato> procurarPorGrupo(String descricao) {
+        ArrayList<Contato> todos = this.procurar("");
+        List<Contato> result = todos.stream()
+                .filter(contato -> contato.getGrupos().stream()
+                        .anyMatch(grupo -> grupo
+                                .comparaGrupo(descricao)) )
+                .collect(Collectors.toList());
+
+        return new ArrayList<>(result);
+    }
 }

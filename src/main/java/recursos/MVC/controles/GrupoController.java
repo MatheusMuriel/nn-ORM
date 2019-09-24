@@ -78,4 +78,24 @@ public class GrupoController implements Controller<Grupo> {
                 .collect(Collectors.toList()).get(0);
     }
 
+    public ArrayList<Grupo> procurarPorTelefone(String numero) {
+        ArrayList<Grupo> todos = this.procurar("");
+        List<Grupo> result = todos.stream()
+                .filter(grupo -> grupo.getContatos().stream()
+                        .anyMatch(contato -> contato.getTelefones().stream()
+                                    .anyMatch(telefone -> telefone.comparaTelefone(numero))))
+                .collect(Collectors.toList());
+
+        return new ArrayList<>(result);
+    }
+
+    public ArrayList<Grupo> procurarPorContato(String nome) {
+        ArrayList<Grupo> todos = this.procurar("");
+        List<Grupo> result = todos.stream()
+                .filter(grupo -> grupo.getContatos().stream()
+                        .anyMatch(contato -> contato.comparaNome(nome)))
+                .collect(Collectors.toList());
+
+        return new ArrayList<>(result);
+    }
 }
