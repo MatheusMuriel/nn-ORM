@@ -10,11 +10,9 @@ Java 8
 Maven
 
 ## Como executar
-```bash
-mvn install
-mvn package
-java -cp target/agenda-db-0.0.1.jar Main
-```
+Abrir no IntelliJ
+Adicionar a biblioteca do JDBC Sqlite
+E dar run no projeto
 
 ## Diagramas
 #### Diagrama de Caso de Uso
