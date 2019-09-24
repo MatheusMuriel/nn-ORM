@@ -10,7 +10,7 @@ public class Main{
         //Persistencia.droparTodasAsTabelas();
         //Populate.criarTabelas();
         //Populate.populateTabelas();
-
+        new Persistencia();
         new AgendaView().pegaEntrada();
 
         System.out.println("Volte sempre! :D");

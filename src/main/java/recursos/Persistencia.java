@@ -38,8 +38,9 @@ public class Persistencia {
 
     public void conectar(){
         try {
+            Class.forName("org.sqlite.JDBC");
             this.conn = DriverManager.getConnection("sqlite-jdbc:banco.sqlite");
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
