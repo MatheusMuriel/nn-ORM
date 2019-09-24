@@ -5,16 +5,14 @@ import recursos.Populate;
 public class Main{
 
     public static void main(String... args){
-        System.out.println("Hello World!");
+        System.out.println("Bem vindo a sua Agenda Eletronica!");
 
         //Persistencia.droparTodasAsTabelas();
         //Populate.criarTabelas();
         //Populate.populateTabelas();
 
-        Persistencia db = new Persistencia();
-        AgendaView view = new AgendaView(db);
-        while (true){
-            view.pegaEntrada();
-        }
+        new AgendaView().pegaEntrada();
+
+        System.out.println("Volte sempre! :D");
     }
 }
