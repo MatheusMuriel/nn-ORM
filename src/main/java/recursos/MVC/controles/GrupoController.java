@@ -45,6 +45,7 @@ public class GrupoController implements Controller<Grupo> {
 
     @Override
     public ArrayList<Grupo> procurar(String descricao) {
+        this.db = new Persistencia();
         List<Tabela> tbs = this.db.getTabelaPorClasse(Grupo.class);
         ArrayList<Grupo> resultado = new ArrayList<>();
 

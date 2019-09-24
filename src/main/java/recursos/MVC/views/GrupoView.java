@@ -1,5 +1,6 @@
 package recursos.MVC.views;
 
+import recursos.MVC.controles.GrupoController;
 import recursos.MVC.modelos.Grupo;
 
 import java.util.ArrayList;
@@ -57,26 +58,119 @@ public class GrupoView implements GenericView<Grupo>{
 
     @Override
     public void deletar(Scanner inp) {
-
+        //TODO
     }
 
     @Override
     public void adicionar(Scanner input) {
+        System.out.println("Você esta adicionando um novo grupo.");
+        String descricao = "";
 
+        boolean confirmado = false;
+        while (!confirmado){
+            System.out.print("\nDescrição: ");
+            descricao = input.nextLine();
+
+            System.out.println("Você vai adicionar o grupo: " + descricao);
+
+            boolean confirmacaoValida = false;
+            while (!confirmacaoValida){
+                System.out.print("Confirmar? (S/N) ");
+                String confirmacao = input.nextLine();
+                switch (confirmacao.toUpperCase()){
+                    case "S":
+                        confirmado = true;
+                        confirmacaoValida = true;
+                        break;
+                    case "N":
+                        confirmado = false;
+                        confirmacaoValida = true;
+                        break;
+                    default:
+                        confirmacaoValida = false;
+                        System.err.println("Confirmação invalida. Por favor digite novamente.");
+                        break;
+                }
+            }
+        }
+        //TODO adicionar contatos ao criar
+        new GrupoController().novoGrupo(descricao);
     }
 
     @Override
     public void consultar(Scanner inp) {
+        System.out.println("Deseja consultar por:");
 
+        System.out.println("1 - Descrição.");
+        System.out.println("2 - Contato.");
+        System.out.println("3 - Telefone.");
+        System.out.println("4 - Listar Todos.");
+        System.out.println("0 - Voltar.");
+
+        boolean valido = false;
+        while (!valido) {
+            System.out.print("Escolha: ");
+            String escolha = inp.nextLine();
+            switch (escolha) {
+                case "1":
+                    valido = true;
+                    consultarPorDescricao(inp);
+                    break;
+                case "2":
+                    valido = true;
+                    consultarPorContato(inp);
+                    break;
+                case "3":
+                    valido = true;
+                    consultarPorTelefone(inp);
+                    break;
+                case "4":
+                    valido = true;
+                    listarTodos();
+                    break;
+                case "0":
+                    valido = true;
+                    break;
+                default:
+                    valido = false;
+                    System.err.println("Modo de consulta invalido. Por favor escolha outro.");
+                    break;
+            }
+        }
     }
 
     @Override
     public void listarTodos() {
-
+        ArrayList <Grupo> result = new GrupoController().procurar("");
+        printarResultado(result);
     }
 
     @Override
     public void printarResultado(ArrayList<Grupo> result) {
-
+        if (result.size() < 1) {
+            System.out.println("Nenhum grupo encontrado :c");
+        } else {
+            System.out.println(":::::                   :::::");
+            result.forEach(grupo -> System.out.println(grupo.toString()));
+            System.out.println(":::::                   :::::");
+        }
     }
+
+    private void consultarPorDescricao(Scanner inp) {
+        System.out.println("Qual descrição você deseja consultar? ");
+        System.out.print("Descrição: ");
+        String desc = inp.nextLine();
+
+        ArrayList <Grupo> result = new GrupoController().procurar(desc);
+        printarResultado(result);
+    }
+
+    private void consultarPorTelefone(Scanner inp) {
+        //TODO
+    }
+
+    private void consultarPorContato(Scanner inp) {
+        //TODO
+    }
+
 }

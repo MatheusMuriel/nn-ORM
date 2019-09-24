@@ -27,15 +27,15 @@ public class AgendaView {
                 switch (entrada){
                     case "1":
                         entradaValida = true;
-                        new ContatoView().pegarEntrada();
+                        new ContatoView().pegarEntrada(input);
                         break;
                     case "2":
                         entradaValida = true;
-                        new TelefoneView().pegarEntrada();
+                        new TelefoneView().pegarEntrada(input);
                         break;
                     case "3":
                         entradaValida = true;
-                        new GrupoView().pegarEntrada();
+                        new GrupoView().pegarEntrada(input);
                         break;
                     case "9":
                         entradaValida = true;

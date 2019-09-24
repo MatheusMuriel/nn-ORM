@@ -108,7 +108,7 @@ public class ContatoView implements GenericView<Contato> {
             System.out.print("\nEmail: ");
             email = input.nextLine();
 
-            System.out.println("Você vai adicionar o contato: " + nome + " com o numero: " + numero);
+            System.out.println("Você vai adicionar o contato: " + nome + " " + sobreNnome + " com o numero: " + numero);
 
             boolean confirmacaoValida = false;
             while (!confirmacaoValida){
@@ -136,11 +136,14 @@ public class ContatoView implements GenericView<Contato> {
 
     @Override
     public void consultar(Scanner inp) {
+        System.out.println();
         System.out.println("Deseja consultar por:");
 
         System.out.println("1 - Nome");
         System.out.println("2 - Numero");
-        System.out.println("3 - Listar todos");
+        System.out.println("3 - Grupo");
+        System.out.println("4 - Listar todos");
+        System.out.println("0 - Voltar.");
 
         boolean valido = false;
         while (!valido) {
@@ -148,16 +151,23 @@ public class ContatoView implements GenericView<Contato> {
             String escolha = inp.nextLine();
             switch (escolha) {
                 case "1":
-                    consultaNome(inp);
                     valido = true;
+                    consultaNome(inp);
                     break;
                 case "2":
-                    consultaNumero(inp);
                     valido = true;
+                    consultaNumero(inp);
                     break;
                 case "3":
                     valido = true;
+                    consultaPorGrupo(inp);
+                    break;
+                case "4":
+                    valido = true;
                     listarTodos();
+                    break;
+                case "0":
+                    valido = true;
                     break;
                 default:
                     valido = false;
@@ -184,6 +194,28 @@ public class ContatoView implements GenericView<Contato> {
         }
     }
 
+    private void consultaNome(Scanner inp) {
+        System.out.println("Qual nome você deseja consultar? ");
+        System.out.print("Nome: ");
+        String nomeConsulta = inp.nextLine();
+
+        ArrayList <Contato> result = new ContatoController().procurar(nomeConsulta);
+        printarResultado(result);
+    }
+
+    private void consultaNumero(Scanner inp) {
+        System.out.println("Qual numero você deseja consultar? ");
+        System.out.print("Numero: ");
+        String numeroConsulta = inp.nextLine();
+
+        ArrayList <Contato> result = new ContatoController().procurarPorNumero(numeroConsulta);
+        printarResultado(result);
+    }
+
+    private void consultaPorGrupo(Scanner inp) {
+        //TODO fazer consulta por grupo
+    }
+
     private void deletarPorNome(Scanner inp) {
         System.out.print("\nNome: ");
         String nome = inp.nextLine();
@@ -207,22 +239,6 @@ public class ContatoView implements GenericView<Contato> {
         }
     }
 
-    private void consultaNumero(Scanner inp) {
-        System.out.println("Qual numero você deseja consultar? ");
-        System.out.print("Numero: ");
-        String numeroConsulta = inp.nextLine();
 
-        ArrayList <Contato> result = new ContatoController().procurarPorNumero(numeroConsulta);
-        printarResultado(result);
-    }
 
-    private void consultaNome(Scanner inp) {
-        System.out.println("Qual nome você deseja consultar? ");
-        System.out.print("Nome: ");
-        String nomeConsulta = inp.nextLine();
-
-        ArrayList <Contato> result = new ContatoController().procurar(nomeConsulta);
-        printarResultado(result);
-    }
-    
 }
