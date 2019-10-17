@@ -16,7 +16,7 @@ E dar run no projeto
 
 ## Diagramas
 #### Diagrama de Caso de Uso
-![Diagrama Caso de uso](http://trab.dc.unifil.br/gitlab/MatheusMuriel/agenda-db/raw/master/Diagramas/UseCaseDiagram.png)
+![Diagrama Caso de uso](https://raw.githubusercontent.com/MatheusMuriel/nn-ORM/master/Diagramas/UseCaseDiagram.png)
 
 #### Diagrama de Classes
-![Diagrama de Classe](http://trab.dc.unifil.br/gitlab/MatheusMuriel/agenda-db/raw/master/Diagramas/ClassDiagram.png)
+![Diagrama de Classe](https://raw.githubusercontent.com/MatheusMuriel/nn-ORM/master/Diagramas/ClassDiagram.png)
